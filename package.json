@@ -1,19 +1,37 @@
 {
-  "name": "nodemcp",
+  "name": "openauto-helper",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "smakowity wspomagacz brachu",
+  "main": "src/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node src/index.js"
+    "dev": "electron src/main.js",
+    "rebuild": "electron-rebuild",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --armv7l",
+    "postinstall": "electron-builder install-app-deps"
   },
   "keywords": [],
-  "author": "",
+  "author": {
+    "name": "Dariusz StinkyCheese",
+    "email": "dariusz.majnert@gmail.com"
+  },
+  "homepage": "https://github.com/b0czek/openauto-helper",
   "license": "ISC",
   "dependencies": {
     "coffee-script": "^1.12.7",
-    "express": "^4.17.1",
     "i2c": "^0.2.5",
-    "socket.io": "^4.0.1"
+    "ini": "^2.0.0",
+    "whatwg-url": "^8.5.0"
+  },
+  "devDependencies": {
+    "electron": "^12.0.2",
+    "electron-builder": "^22.10.5"
+  },
+  "build": {
+    "appId": "com.openauto.helper",
+    "linux": {
+      "target": "AppImage"
+    }
   }
 }
