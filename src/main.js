@@ -26,8 +26,8 @@ function createWindow() {
 
     sensors.start(
         (voltage) => {
-            console.log('vlauechanged to ' + voltage);
-            win.webContents.send('voltage', voltage);
+            win.webContents.emit('voltage', voltage);
+            // win.webContents.send('voltage', voltage);
         }
     );
     win.setPosition(0, 0);

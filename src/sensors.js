@@ -1,9 +1,7 @@
 const mcp3424 = require('./mcp3424');
-let address = 0x6C;
-let resolution = 1;
-let gain = 0;
+const config = require('./config').mcp3424;
 
-let mcp = new mcp3424(address, gain, resolution, '/dev/i2c-1');
+let mcp = new mcp3424(config.address, config.gain, config.resolution, config.bus);
 let lastVoltage = null;
 
 const start = callback => {
@@ -13,7 +11,7 @@ const start = callback => {
             lastVoltage = voltage;
             callback(voltage);
         }
-    }, 20);
+    }, config.readingInterval);
 }
 const getVoltage = () => lastVoltage;
 
