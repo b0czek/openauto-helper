@@ -203,12 +203,11 @@ class GaugePointer extends ValueUpdater
 	img: null
 
 	constructor: (@gauge) ->
-		super()
+		super(false, false)
 		if @gauge is undefined
 			throw new Error 'The element isn\'t defined.'
 		@ctx = @gauge.ctx
 		@canvas = @gauge.canvas
-		super(false, false)
 		@setOptions()
 
 	setOptions: (options = null) ->
@@ -239,19 +238,21 @@ class GaugePointer extends ValueUpdater
 		@ctx.beginPath()
 		@ctx.fillStyle = @options.color
 		@ctx.arc(0, 0, @strokeWidth, 0, Math.PI * 2, false)
+		@ctx.fill()
+		
 		if @outlineWidth
 			@ctx.strokeStyle = @options.outlineColor
 			@ctx.lineWidth = @options.outlineWidth
 			@ctx.stroke()			
-		@ctx.fill()
 
 		@ctx.beginPath()
 		@ctx.moveTo(startX, startY)
 		@ctx.lineTo(x, y)
 		@ctx.lineTo(endX, endY)
+		@ctx.fill()
+
 		if @outlineWidth
 			@ctx.stroke()
-		@ctx.fill()
 
 		if @img
 			imgX = Math.round(@img.width * @options.iconScale)

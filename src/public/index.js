@@ -49,7 +49,9 @@ var opts = {
     pointer: {
         length: 0.6, // // Relative to gauge radius
         strokeWidth: 0.035, // The thickness
-        color: '#ffffff' // Fill color
+        color: '#ffffff', // Fill color
+        outlineWidth: 0.5,
+        outlineColor: "#ff0000"
     },
     limitMax: false,     // If false, max value increases automatically if value > maxValue
     limitMin: false,     // If true, the min value of the gauge will be fixed
