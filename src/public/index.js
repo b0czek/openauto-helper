@@ -50,10 +50,10 @@ var opts = {
         length: 0.6, // // Relative to gauge radius
         strokeWidth: 0.035, // The thickness
         color: '#ffffff', // Fill color
-        outlineWidth: 0.5,
+        outlineWidth: 1,
         outlineColor: "#ff0000"
     },
-    limitMax: false,     // If false, max value increases automatically if value > maxValue
+    limitMax: true,     // If false, max value increases automatically if value > maxValue
     limitMin: false,     // If true, the min value of the gauge will be fixed
     colorStart: '#6FADCF',   // Colors
     colorStop: '#8FC0DA',    // just experiment with them
@@ -85,11 +85,13 @@ gauge.set(0); // set actual value
 let label = document.getElementById('value');
 
 
-window.api.receive('voltage', (voltage) => {
-    gauge.set(voltage); // set actual value
-    label.innerText = voltage.toFixed(2);
-    //console.log(voltage);
+window.api.receive('oilpressure.0', (err, data) => {
+    if (err) {
+        label.innerText = "-.--";
+    }
+    gauge.set(data); // set actual value
+    label.innerText = data.toFixed(2);
 });
 window.onload = _ => {
-    window.api.send('valuesRequest');
+    window.api.send('oilpressure.0');
 };
