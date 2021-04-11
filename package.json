@@ -2,11 +2,11 @@
     "name": "openauto-helper",
     "version": "1.0.0",
     "description": "smakowity wspomagacz brachu",
-    "main": "dist/main.js",
+    "main": "build/main.js",
     "scripts": {
         "postinstall": "electron-builder install-app-deps",
         "build": "tsc",
-        "dev": "electron dist/main.js",
+        "dev": "electron build/main.js",
         "pack": "electron-builder --dir",
         "dist": "electron-builder --armv7l",
         "gauge:build": "coffee -c -o src/public/gauge.js src/gauge/gauge.coffee",
@@ -40,11 +40,15 @@
     "build": {
         "appId": "com.openauto.helper",
         "linux": {
-            "target": "AppImage"
+            "target": "AppImage",
+            "asar": false
         },
+        "extends": null,
+        "files": [
+            "build/**/*"
+        ],
         "directories": {
-            "buildResources": "dist",
-            "output": "bin"
+            "buildResources": "assets"
         }
     }
 }
