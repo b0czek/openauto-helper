@@ -1,5 +1,6 @@
+// mcp3424 npm library rewritten with typescript and with better i2c library
+
 import i2c from "i2c-bus";
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from "node:constants";
 import { MCP3424Options } from "src/config";
 
 let MCP342X_GAIN_FIELD = 0x03,
@@ -21,10 +22,11 @@ let MCP342X_GAIN_FIELD = 0x03,
     MCP342X_CHANNEL_4 = 0x60,
     MCP342X_START = 0x80,
     MCP342X_BUSY = 0x80;
-
+type ZeroToThree = 0 | 1 | 2 | 3;
 export type WatchCallback = (err: any) => void;
-export type Channels = 0 | 1 | 2 | 3;
-export type Gains = 0 | 1 | 2 | 3;
+export type Channels = ZeroToThree;
+export type Gains = ZeroToThree;
+export type Resolutions = ZeroToThree;
 type ReadDataResult = number | null;
 
 class MCP3424 {
@@ -36,7 +38,7 @@ class MCP3424 {
 
     private address: number;
     private gain: Gains;
-    private res: number;
+    private res: Resolutions;
     private busNumber: number;
     private readingInterval: number;
     private changeInsensitivity: number;

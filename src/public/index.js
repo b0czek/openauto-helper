@@ -61,11 +61,11 @@ var opts = {
     generateGradient: true,
     highDpiSupport: true,     // High resolution support
     staticZones: [
-        { strokeStyle: "#F03E3E", min: 0.00, max: 0.50 }, // Red
+        { strokeStyle: "#F03E3E", min: 0.00, max: 1 }, // Red
         { strokeStyle: "#FFDD00", min: 0.50, max: 1.5 }, // Yellow
-        { strokeStyle: "#30B32D", min: 1.50, max: 3.5 }, // Green
-        { strokeStyle: "#FFDD00", min: 3.50, max: 4.50 }, // Yellow
-        { strokeStyle: "#F03E3E", min: 4.50, max: 5.06 }  // Red
+        { strokeStyle: "#30B32D", min: 1.50, max: 4.0 }, // Green
+        { strokeStyle: "#FFDD00", min: 3.50, max: 4.5 }, // Yellow
+        { strokeStyle: "#F03E3E", min: 4.50, max: 10 }  // Red
     ],
     staticLabels: {
         font: "18px sans-serif",  // Specifies font
@@ -76,7 +76,7 @@ var opts = {
 };
 var target = document.getElementById('gauge'); // your canvas element
 var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
-gauge.maxValue = 5.06; // set max gauge value
+gauge.maxValue = 10.00; // set max gauge value
 gauge.setMinValue(0.00);  // Prefer setter over gauge.minValue = 0
 gauge.animationSpeed = 32; // set animation speed (32 is default value)
 gauge.set(0); // set actual value
@@ -88,6 +88,7 @@ let label = document.getElementById('value');
 window.api.receive('oilpressure.0', (err, data) => {
     if (err) {
         label.innerText = "-.--";
+        return;
     }
     gauge.set(data); // set actual value
     label.innerText = data.toFixed(2);
@@ -95,3 +96,16 @@ window.api.receive('oilpressure.0', (err, data) => {
 window.onload = _ => {
     window.api.send('oilpressure.0');
 };
+
+window.api.receive('foglights.0', (err, data) => {
+    if (err) {
+        console.error(err);
+    }
+    else {
+        console.log(data);
+    }
+});
+
+setInterval(() => {
+    window.api.send('foglights.0', 'toggle');
+}, 10000);

@@ -1,10 +1,10 @@
 import { Night } from "./appearance";
-import { Channels as MCP3424Channels } from "./io/mcp3424";
+import { Gains as MCP3424Gains, Resolutions as MCP3424Resolutions } from "./io/mcp3424";
+import { OnOffConfig } from "./io/onoff";
+import { AdcChannelConfig } from "./io/adcchannel";
 export interface Config {
     appearance: Appearance;
-    mcp3424: MCP3424Options;
-    oilPressure: OilPressure;
-    fogLights: FogLights;
+    io: IO;
 }
 
 export interface Appearance {
@@ -20,22 +20,17 @@ export interface FallbackValues {
 
 export interface MCP3424Options {
     address: number;
-    resolution: 0 | 1 | 2 | 3;
-    gain: 0 | 1 | 2 | 3;
+    resolution: MCP3424Resolutions;
+    gain: MCP3424Gains;
     busNumber: number;
     readingInterval: number;
     changeInsensitivity: number;
 }
-export interface OilPressure {
-    adcChannel: MCP3424Channels;
-    minValue: number;
-    maxValue: number;
-    minVoltage: number;
-    maxVoltage: number;
-}
 
-export interface FogLights {
-    gpioNumber: number;
+export interface IO {
+    mcp3424: MCP3424Options;
+    adcChannels: AdcChannelConfig[];
+    onoffs: OnOffConfig[];
 }
 
 const config: Config = {
@@ -65,23 +60,33 @@ const config: Config = {
             },
         },
     },
-    mcp3424: {
-        address: 0x6c,
-        resolution: 1,
-        gain: 0,
-        busNumber: 1,
-        readingInterval: 20,
-        changeInsensitivity: 10,
-    },
-    oilPressure: {
-        adcChannel: 0,
-        minValue: 0.0,
-        maxValue: 10.0,
-        minVoltage: 0,
-        maxVoltage: 4.5,
-    },
-    fogLights: {
-        gpioNumber: 19,
+
+    io: {
+        mcp3424: {
+            address: 0x6c,
+            resolution: 1,
+            gain: 0,
+            busNumber: 1,
+            readingInterval: 20,
+            changeInsensitivity: 10,
+        },
+        adcChannels: [
+            {
+                name: "oilpressure.0",
+                adcChannel: 0,
+                minValue: 0.0,
+                maxValue: 10.0,
+                minVoltage: 0,
+                maxVoltage: 4.5,
+            },
+        ],
+        onoffs: [
+            {
+                name: "foglights.0",
+                gpioNumber: 19,
+                offState: 1,
+            },
+        ],
     },
 };
 
