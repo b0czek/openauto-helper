@@ -22,12 +22,21 @@ img {
     margin: auto;
 }
 
-.oilPressureGauge {
-    margin-top: 41px;
+.contentTile {
     margin-left: 49px;
     background-color: rgba(0, 0, 0, 0.25);
     height: 450px;
     border-radius: 20px;
+    margin-bottom: 10px;
+}
+.content > .contentTile:first-child {
+    margin-top: 41px;
+}
+.time {
+    padding-top: 100px;
+    text-align: center;
+    font-size: 100px;
+    font-weight: bold;
 }
 
 #value {
