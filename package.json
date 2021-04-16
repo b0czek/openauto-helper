@@ -12,7 +12,7 @@
         "pack": "electron-builder --dir",
         "dist": "electron-builder --armv7l",
         "gauge:build": "coffee -c -o src/public/gauge.js src/gauge/gauge.coffee",
-        "push": "rsync -r ./ pi@192.168.1.21:/home/pi/openautotstest --filter=':- .gitignore'",
+        "push": "rsync -r ./ pi@192.168.1.21:/home/pi/openauto-helper --filter=':- .gitignore'",
         "pipeline": "yarn run build && yarn run dist"
     },
     "keywords": [],
