@@ -2,6 +2,7 @@ import { Night } from "./appearance";
 import { Gains as MCP3424Gains, Resolutions as MCP3424Resolutions } from "./io/mcp3424";
 import { OnOffConfig } from "./io/onoff";
 import { AdcChannelConfig } from "./io/adcchannel";
+import { DS18B20Config } from "./io/ds18b20";
 export interface Config {
     appearance: Appearance;
     io: IO;
@@ -31,6 +32,7 @@ export interface IO {
     mcp3424: MCP3424Options;
     adcChannels: AdcChannelConfig[];
     onoffs: OnOffConfig[];
+    DS18B20s: DS18B20Config[];
 }
 
 const config: Config = {
@@ -92,6 +94,14 @@ const config: Config = {
                 offState: 1,
                 feedbackGpioNumber: 13,
                 scheduleTime: 500,
+            },
+        ],
+        DS18B20s: [
+            {
+                name: "inside.0",
+                sensorId: "28-01161c941cee",
+                changeInsensitivity: 0.1,
+                readingInterval: 1000,
             },
         ],
     },

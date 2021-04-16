@@ -23,6 +23,7 @@
     "homepage": "https://github.com/b0czek/openauto-helper",
     "license": "ISC",
     "dependencies": {
+        "ds18b20-raspi-typescript": "^0.3.8",
         "i2c-bus": "^5.2.1",
         "iniparser": "^1.0.5",
         "lodash": "^4.17.21",
