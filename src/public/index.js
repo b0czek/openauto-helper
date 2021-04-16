@@ -1,44 +1,3 @@
-let ecoStateClassName = "ecoIndicatorInactive";
-let icon = document.getElementById("ecoIndicator");
-
-let container = document.getElementById("ecoIndicatorContainer");
-
-const switchEco = _ => {
-    if (icon.classList.contains(ecoStateClassName)) {
-        icon.classList.remove(ecoStateClassName);
-    }
-    else {
-        icon.classList.add(ecoStateClassName);
-    }
-};
-container.onclick = switchEco;
-
-
-
-
-
-
-let stateClassName = "fogLightsSwitched";
-let img = document.getElementById("fogLightsSwitch");
-let bar = document.getElementById("bottomBarContent");
-
-let outline = document.getElementById("fogLightsOutline");
-
-const switchLights = _ => {
-    if (outline.classList.contains(stateClassName)) {
-        outline.classList.remove(stateClassName);
-    }
-    else {
-        outline.classList.add(stateClassName);
-    }
-};
-bar.onclick = switchLights;
-// img.onclick = switchLights;
-
-
-
-
-
 
 
 
@@ -54,7 +13,7 @@ var opts = {
         outlineColor: "#ff0000"
     },
     limitMax: true,     // If false, max value increases automatically if value > maxValue
-    limitMin: false,     // If true, the min value of the gauge will be fixed
+    limitMin: true,     // If true, the min value of the gauge will be fixed
     colorStart: '#6FADCF',   // Colors
     colorStop: '#8FC0DA',    // just experiment with them
     strokeColor: '#E0E0E0',  // to see which ones work best for you
@@ -65,7 +24,7 @@ var opts = {
         { strokeStyle: "#FFDD00", min: 0.50, max: 1.5 }, // Yellow
         { strokeStyle: "#30B32D", min: 1.50, max: 4.0 }, // Green
         { strokeStyle: "#FFDD00", min: 3.50, max: 4.5 }, // Yellow
-        { strokeStyle: "#F03E3E", min: 4.50, max: 10 }  // Red
+        { strokeStyle: "#F03E3E", min: 4.50, max: 5 }  // Red
     ],
     staticLabels: {
         font: "18px sans-serif",  // Specifies font
@@ -76,7 +35,7 @@ var opts = {
 };
 var target = document.getElementById('gauge'); // your canvas element
 var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
-gauge.maxValue = 10.00; // set max gauge value
+gauge.maxValue = 5.00; // set max gauge value
 gauge.setMinValue(0.00);  // Prefer setter over gauge.minValue = 0
 gauge.animationSpeed = 32; // set animation speed (32 is default value)
 gauge.set(0); // set actual value
@@ -95,17 +54,83 @@ window.api.receive('oilpressure.0', (err, data) => {
 });
 window.onload = _ => {
     window.api.send('oilpressure.0');
+    window.api.send('foglights.0', 'read');
+    window.api.send('eco.0', 'read');
 };
 
-window.api.receive('foglights.0', (err, data) => {
+
+
+
+let stateClassName = "fogLightsSwitched";
+let bar = document.getElementById("bottomBarContent");
+
+let outline = document.getElementById("fogLightsOutline");
+
+const switchLights = _ => {
+    window.api.send('foglights.0', 'toggle');
+};
+
+bar.onclick = switchLights;
+
+window.api.receive('foglights.0', (err, wroteState) => {
     if (err) {
         console.error(err);
     }
     else {
-        console.log(data);
+        // if foglights are turned on 
+        if (wroteState == 0) {
+            outline.classList.add(stateClassName);
+        }
+        else {
+            outline.classList.remove(stateClassName);
+        }
     }
 });
 
+
+
+
+
+let ecoStateClassName = "ecoIndicatorInactive";
+let icon = document.getElementById("ecoIndicator");
+
+let container = document.getElementById("ecoIndicatorContainer");
+
+const switchEco = _ => {
+    window.api.send('eco.0', 'toggle');
+};
+container.onclick = switchEco;
+
+window.api.receive('eco.0', (err, feedback) => {
+    if (err) {
+        console.error(err);
+    }
+    else {
+        if (feedback == 0) {
+            icon.classList.add(ecoStateClassName);
+        }
+        else {
+            icon.classList.remove(ecoStateClassName);
+        }
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let watch = document.getElementById("watch");
 setInterval(() => {
-    window.api.send('foglights.0', 'toggle');
-}, 10000);
+    let now = new Date();
+    watch.innerText = `${now.getHours()}:${now.getMinutes()}`
+}, 1000);
