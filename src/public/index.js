@@ -132,5 +132,5 @@ window.api.receive('eco.0', (err, feedback) => {
 let watch = document.getElementById("watch");
 setInterval(() => {
     let now = new Date();
-    watch.innerText = `${now.getHours()}:${now.getMinutes()}`
+    watch.innerText = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
 }, 1000);
