@@ -33,16 +33,24 @@ export default class DS18B20 extends IOComponent {
     }
 
     private _readTemp = (): void => {
-        this.temp = sensor.readC(this.config.sensorId, 1);
-        if (
-            this.temp !== null &&
-            (this.lastTemp === null ||
-                this.lastTemp + this.config.changeInsensitivity < this.temp ||
-                this.lastTemp - this.config.changeInsensitivity > this.temp)
-        ) {
-            //if temperature changed or there was error previously
-            this.ios.webContents.send(this.name, this.temp);
-            this.lastTemp = this.temp;
-        }
+        sensor.readC(this.config.sensorId, 1, (err, result) => {
+            if (err) {
+                this.sendState(err);
+                console.error(err);
+                return;
+            }
+
+            console.log((this.temp = result));
+            if (
+                this.temp !== null &&
+                (this.lastTemp === null ||
+                    this.lastTemp + this.config.changeInsensitivity < this.temp ||
+                    this.lastTemp - this.config.changeInsensitivity > this.temp)
+            ) {
+                //if temperature changed or there was error previously
+                this.sendState(null, this.temp);
+                this.lastTemp = this.temp;
+            }
+        });
     };
 }
