@@ -21,7 +21,6 @@ export default class AdcChannel extends IOComponent {
         this.mcp = mcp;
         this.mcp.watch(config.adcChannel, (err) => {
             let value = this._calculateValue();
-            console.log(value);
 
             this.sendState(err, value);
         });
@@ -32,7 +31,9 @@ export default class AdcChannel extends IOComponent {
     private _calculateValue(): number {
         let voltage = this.mcp.getVoltage(this.config.adcChannel);
         let { maxValue, maxVoltage, minValue, minVoltage } = this.config;
-
+        if (voltage < minVoltage) {
+            return 0;
+        }
         // https://stackoverflow.com/questions/51494376/how-to-transform-one-numerical-scale-into-another
         // x in [a,b] => z = (d-c) * (x-a) / (b-a) + c in [c,d]
         return (
