@@ -35,7 +35,6 @@ export default class DS18B20 extends IOComponent {
         sensor.readC(this.config.sensorId, 1, (err, result) => {
             if (err) {
                 this.sendState(err);
-                console.error(err);
                 return;
             }
 
