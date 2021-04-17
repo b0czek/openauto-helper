@@ -18,20 +18,24 @@ export default class AdcChannel extends IOComponent {
         super(config, ios);
         this.config = config;
         this.mcp = mcp;
-        this.mcp.watch(config.adcChannel, (err) => {
-            let value = this._calculateValue();
-
-            this.sendState(err, value);
-        });
+        this.mcp.openChannel(config.adcChannel);
+        this.mcp.watch(config.adcChannel, this._mcpCallback);
         this.ios.ipcMain.on(this.name, (_) => {
             this.sendState(null, this._calculateValue());
         });
     }
     public close() {
-        this.mcp.unwatch(this.config.adcChannel);
+        this.mcp.unwatch(this.config.adcChannel, this._mcpCallback);
     }
+
+    private _mcpCallback(err: any) {
+        let value = this._calculateValue();
+
+        this.sendState(err, value);
+    }
+
     private _calculateValue(): number {
-        let voltage = this.mcp.getVoltage(this.config.adcChannel);
+        let voltage = this.mcp.getVoltage(this.config.adcChannel)!;
         let { maxValue, maxVoltage, minValue, minVoltage } = this.config;
         if (voltage < minVoltage) {
             return 0;
