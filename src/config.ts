@@ -76,6 +76,7 @@ const config: Config = {
                 activeLow: true,
                 feedbackGpioNumber: 13,
                 scheduleTime: 500,
+                resetStateAtStart: true,
             },
             {
                 type: "ds18b20",

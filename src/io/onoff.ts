@@ -8,6 +8,7 @@ export interface OnOffConfig extends IOComponentConfig {
     activeLow: boolean;
     feedbackGpioNumber?: number;
     scheduleTime?: number;
+    resetStateAtStart?: boolean;
 }
 
 export default class OnOff extends IOComponent {
@@ -35,6 +36,10 @@ export default class OnOff extends IOComponent {
         // initialize pin to offstate
         this.gpio.writeSync(0);
 
+        if (this.config.resetStateAtStart && this.config.scheduleTime) {
+            this.schedulePin();
+        }
+
         //watch for requestes from frontend
         this.ios.ipcMain.on(this.name, (_: IpcMainEvent, message: any) => {
             // if the message is read, send the current gpio state back
@@ -61,11 +66,7 @@ export default class OnOff extends IOComponent {
                     if (this.scheduleTimeout) {
                         return;
                     }
-                    this.gpio.write(1, this._writeCallback);
-                    this.scheduleTimeout = setTimeout(() => {
-                        this.scheduleTimeout = null;
-                        this.gpio.write(0, this._writeCallback);
-                    }, config.scheduleTime);
+                    this.schedulePin();
                 }
             }
         });
@@ -77,6 +78,14 @@ export default class OnOff extends IOComponent {
             this.feedback.unexport();
         }
     }
+
+    private schedulePin = () => {
+        this.gpio.write(1, this._writeCallback);
+        this.scheduleTimeout = setTimeout(() => {
+            this.scheduleTimeout = null;
+            this.gpio.write(0, this._writeCallback);
+        }, this.config.scheduleTime);
+    };
 
     // calculate new state by subtracting current value from 1 (1-0 = 1, 1-1 = 0)
     private _getOppositeState = (oldState: BinaryValue): BinaryValue =>
