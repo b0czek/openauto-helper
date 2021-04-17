@@ -21,11 +21,14 @@ let MCP342X_GAIN_FIELD = 0x03,
     MCP342X_CHANNEL_4 = 0x60,
     MCP342X_START = 0x80,
     MCP342X_BUSY = 0x80;
+
 type ZeroToThree = 0 | 1 | 2 | 3;
-export type WatchCallback = (err: any) => void;
+
 export type Channels = ZeroToThree;
 export type Gains = ZeroToThree;
 export type Resolutions = ZeroToThree;
+
+export type WatchCallback = (err: any) => void;
 type ReadDataResult = number | null;
 
 export interface MCP3424Options {
@@ -37,12 +40,16 @@ export interface MCP3424Options {
     changeInsensitivity: number;
 }
 
-export default class MCP3424 {
-    private channel: number[] = [];
-    private currentChannel: Channels = 0;
+interface ChannelData {
+    lastValue: number;
+    callbacks: (WatchCallback | null)[];
+    value: number;
+    channel: Channels;
+}
 
-    private lastValues: number[] = [0, 0, 0, 0];
-    private channelCallback: (WatchCallback | null)[] = [];
+export default class MCP3424 {
+    private currentChannel: ChannelData;
+    private channelsData: (ChannelData | null)[] = new Array(4).fill(null);
 
     private address: number;
     private gain: Gains;
@@ -64,7 +71,28 @@ export default class MCP3424 {
         this.changeInsensitivity = options.changeInsensitivity;
 
         this.bus = i2c.openSync(this.busNumber);
-        this._readDataContinuously();
+    }
+
+    public openChannel(channel: Channels) {
+        let newChannel: ChannelData = {
+            callbacks: [],
+            lastValue: 0,
+            value: 0,
+            channel,
+        };
+        this.channelsData[channel] = newChannel;
+        if (this._getOpenedChannels().length == 1) {
+            this.currentChannel = newChannel;
+            this._readDataContinuously();
+        }
+    }
+    public closeChannel(channel: Channels) {
+        this.channelsData[channel] = null;
+        if (this._getOpenedChannels().length == 0) {
+            clearInterval(this._interval);
+            // current channel does not need to be nulled since its only used while reading
+            // which is actually stopped
+        }
     }
 
     public close() {
@@ -72,19 +100,36 @@ export default class MCP3424 {
         this.bus.closeSync();
     }
     public watch(channel: Channels, callback: WatchCallback): void {
-        this.channelCallback[channel] = callback;
+        let chan = this.channelsData[channel];
+        if (chan !== null) {
+            chan.callbacks.push(callback);
+        } else {
+            throw new Error("Cannot watch not opened channel. Try opening it first.");
+        }
     }
-    public unwatch(channel: Channels): void {
-        this.channelCallback[channel] = null;
+    public unwatch(channel: Channels, callback: WatchCallback): void {
+        let chan = this.channelsData[channel];
+        if (chan !== null && chan.callbacks.length > 0) {
+            this.channelsData[channel]!.callbacks = chan.callbacks.filter((cb) => cb !== callback);
+        } else {
+            throw new Error(
+                "Cannot unwatch not opened channel or there are no callbacks for this channels"
+            );
+        }
     }
 
-    public getVoltage(channel: Channels): number {
-        return this.getMv(channel) * (0.0005 / this._getPga()) * 2.471;
+    public getVoltage(channel: Channels): number | null {
+        let mv = this.getMv(channel);
+        if (mv) {
+            return mv * (0.0005 / this._getPga()) * 2.471;
+        }
+        return null;
     }
 
-    public getMv(channel: Channels): number {
-        return this.channel[channel];
+    public getMv(channel: Channels): number | null {
+        return this.channelsData[channel] ? this.channelsData[channel]!.value : null;
     }
+
     private _getMvDivisor(): number {
         return 1 << (this.gain + 2 * this.res);
     }
@@ -113,27 +158,37 @@ export default class MCP3424 {
         this.bus.i2cWriteSync(this.address, buffer.length, buffer);
     }
 
-    private _nextChannel(): void {
-        // if channel is on 3, loop it back to 0
-        if (this.currentChannel == 3) {
-            this.currentChannel = 0;
-        } else {
-            this.currentChannel++;
+    private _nextChannel(): ChannelData | null {
+        let currentChannel = this.currentChannel.channel;
+
+        for (let i = currentChannel + 1; i <= 4 + currentChannel; i++) {
+            let idx = i % 4;
+            if (this.channelsData[idx] !== null) {
+                return this.channelsData[idx];
+            }
         }
+        return null;
     }
 
-    private _emitDataChange(chan: Channels, err: any): void {
-        if (typeof this.channelCallback[chan] === "function") {
-            this.channelCallback[chan]!(err);
+    private _getOpenedChannels = (): Channels[] =>
+        this.channelsData.filter((c) => c !== null).map((c) => c!.channel);
+
+    private _emitDataChange(chan: ChannelData, err: any): void {
+        for (let callback of chan.callbacks) {
+            if (typeof callback === "function") {
+                callback(err);
+            }
         }
     }
-
+    // basically start interval
+    // this should be a timeout, so the data would be read before first interval finishing
+    // but it would make this function asynchronous but i dont care that much
     private _readDataContinuously(): void {
         this._interval = setInterval(async (_) => {
-            let chan: Channels = this.currentChannel;
+            let chan: ChannelData = this.currentChannel;
             let newValue: ReadDataResult = null;
             try {
-                newValue = await this._readData(chan);
+                newValue = await this._readData(chan.channel);
             } catch (err) {
                 this._emitDataChange(chan, err);
             }
@@ -143,11 +198,11 @@ export default class MCP3424 {
             }
 
             if (
-                this.lastValues[chan] + this.changeInsensitivity < newValue ||
-                this.lastValues[chan] - this.changeInsensitivity > newValue
+                chan.lastValue + this.changeInsensitivity < newValue ||
+                chan.lastValue - this.changeInsensitivity > newValue
             ) {
                 //if value changed
-                this.lastValues[chan] = newValue; // update last value
+                chan.lastValue = newValue; // update last value
                 this._emitDataChange(chan, null);
             }
         }, this.readingInterval);
@@ -165,8 +220,7 @@ export default class MCP3424 {
                 await bus.i2cWrite(this.address, bw.length, bw);
                 await bus.i2cRead(this.address, br.length, br);
             } catch (err) {
-                console.error(err);
-                reject(err);
+                return reject(err);
             }
             // mask the config  and if the resolution is 18 bit, then there are 3 bytes for data
             let dataBytes = (command & MCP342X_RES_FIELD) === MCP342X_18_BIT ? 3 : 2;
@@ -176,12 +230,27 @@ export default class MCP3424 {
             let statusByte = br[dataBytes];
 
             if ((statusByte & MCP342X_BUSY) === 0) {
-                this.channel[this.currentChannel] = result / this._getMvDivisor();
-                this._nextChannel();
-                this._changeChannel(this.currentChannel);
-                resolve(result);
+                // calculate mV present on the adc channel
+                this.currentChannel.value = result / this._getMvDivisor();
+                // get next channel number
+                let nextChannel = this._nextChannel();
+                if (nextChannel === null) {
+                    return resolve(null);
+                }
+                try {
+                    // try to change to it
+                    this._changeChannel(nextChannel.channel);
+                } catch (err) {
+                    // if it fails, then notify about it
+                    return reject(err);
+                }
+                // if channel changes sucessfully, then switch variable to next channel
+                this.currentChannel = nextChannel;
+
+                return resolve(result);
             } else {
-                resolve(null);
+                // bus is busy
+                return resolve(null);
             }
         });
     }
