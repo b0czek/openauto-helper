@@ -1,7 +1,6 @@
 // mcp3424 npm library rewritten with typescript and with better i2c library
 
 import i2c from "i2c-bus";
-import { MCP3424Options } from "src/config";
 
 let MCP342X_GAIN_FIELD = 0x03,
     MCP342X_GAIN_X1 = 0x00,
@@ -29,7 +28,16 @@ export type Gains = ZeroToThree;
 export type Resolutions = ZeroToThree;
 type ReadDataResult = number | null;
 
-class MCP3424 {
+export interface MCP3424Options {
+    address: number;
+    resolution: Resolutions;
+    gain: Gains;
+    busNumber: number;
+    readingInterval: number;
+    changeInsensitivity: number;
+}
+
+export default class MCP3424 {
     private channel: number[] = [];
     private currentChannel: Channels = 0;
 
@@ -178,4 +186,3 @@ class MCP3424 {
         });
     }
 }
-export default MCP3424;

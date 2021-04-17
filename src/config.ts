@@ -1,11 +1,8 @@
 import { Night } from "./appearance";
-import { Gains as MCP3424Gains, Resolutions as MCP3424Resolutions } from "./io/mcp3424";
-import { OnOffConfig } from "./io/onoff";
-import { AdcChannelConfig } from "./io/adcchannel";
-import { DS18B20Config } from "./io/ds18b20";
+import { IOConfig, Compontents } from "./io/io";
 export interface Config {
     appearance: Appearance;
-    io: IO;
+    io: IOConfig;
 }
 
 export interface Appearance {
@@ -17,22 +14,6 @@ export interface Appearance {
 
 export interface FallbackValues {
     colors: Night;
-}
-
-export interface MCP3424Options {
-    address: number;
-    resolution: MCP3424Resolutions;
-    gain: MCP3424Gains;
-    busNumber: number;
-    readingInterval: number;
-    changeInsensitivity: number;
-}
-
-export interface IO {
-    mcp3424: MCP3424Options;
-    adcChannels: AdcChannelConfig[];
-    onoffs: OnOffConfig[];
-    DS18B20s: DS18B20Config[];
 }
 
 const config: Config = {
@@ -72,8 +53,9 @@ const config: Config = {
             readingInterval: 25,
             changeInsensitivity: 10,
         },
-        adcChannels: [
+        channels: [
             {
+                type: "adcChannel",
                 name: "oilpressure.0",
                 adcChannel: 0,
                 minValue: 0.0,
@@ -81,25 +63,24 @@ const config: Config = {
                 minVoltage: 0.5,
                 maxVoltage: 4.5,
             },
-        ],
-        onoffs: [
             {
+                type: "onoff",
                 name: "foglights.0",
                 gpioNumber: 5,
-                offState: 1,
+                activeLow: true,
             },
             {
+                type: "onoff",
                 name: "eco.0",
                 gpioNumber: 16,
-                offState: 1,
+                activeLow: true,
                 feedbackGpioNumber: 13,
                 scheduleTime: 500,
             },
-        ],
-        DS18B20s: [
             {
-                name: "inside.0",
-                sensorId: "28-01161c941cee",
+                type: "ds18b20",
+                name: "thermometer.0",
+                sensorId: "28-0417b31c59ff",
                 changeInsensitivity: 0.1,
                 readingInterval: 1000,
             },

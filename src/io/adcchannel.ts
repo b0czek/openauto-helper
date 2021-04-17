@@ -1,9 +1,8 @@
-import { IOs } from "./io";
-import IOComponent from "./ioComponent";
+import { RendererIO } from "./io";
+import IOComponent, { IOComponentConfig } from "./ioComponent";
 import MCP3424, { Channels } from "./mcp3424";
 
-export interface AdcChannelConfig {
-    name: string;
+export interface AdcChannelConfig extends IOComponentConfig {
     adcChannel: Channels;
     minValue: number;
     maxValue: number;
@@ -15,8 +14,8 @@ export default class AdcChannel extends IOComponent {
     private mcp: MCP3424;
     private config: AdcChannelConfig;
 
-    constructor(config: AdcChannelConfig, ios: IOs, mcp: MCP3424) {
-        super(config.name, ios);
+    constructor(config: AdcChannelConfig, ios: RendererIO, mcp: MCP3424) {
+        super(config, ios);
         this.config = config;
         this.mcp = mcp;
         this.mcp.watch(config.adcChannel, (err) => {
@@ -27,6 +26,9 @@ export default class AdcChannel extends IOComponent {
         this.ios.ipcMain.on(this.name, (_) => {
             this.sendState(null, this._calculateValue());
         });
+    }
+    public close() {
+        this.mcp.unwatch(this.config.adcChannel);
     }
     private _calculateValue(): number {
         let voltage = this.mcp.getVoltage(this.config.adcChannel);

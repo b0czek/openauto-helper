@@ -1,12 +1,11 @@
 import { Gpio, ValueCallback, BinaryValue } from "onoff";
-import { IOs } from "./io";
-import IOComponent from "./ioComponent";
+import { RendererIO } from "./io";
+import IOComponent, { IOComponentConfig } from "./ioComponent";
 import { IpcMainEvent } from "electron";
 
-export interface OnOffConfig {
-    name: string;
+export interface OnOffConfig extends IOComponentConfig {
     gpioNumber: number;
-    offState: BinaryValue;
+    activeLow: boolean;
     feedbackGpioNumber?: number;
     scheduleTime?: number;
 }
@@ -16,11 +15,13 @@ export default class OnOff extends IOComponent {
     private feedback: Gpio;
     private scheduleTimeout: NodeJS.Timeout | null = null;
     private config: OnOffConfig;
-    constructor(config: OnOffConfig, ios: IOs) {
-        super(config.name, ios);
+    constructor(config: OnOffConfig, ios: RendererIO) {
+        super(config, ios);
         this.config = config;
 
-        this.gpio = new Gpio(this.config.gpioNumber, "out");
+        this.gpio = new Gpio(this.config.gpioNumber, "out", "none", {
+            activeLow: this.config.activeLow,
+        });
         // if pin has auxilliary pin for feedback provided
         if (config.feedbackGpioNumber) {
             this.feedback = new Gpio(config.feedbackGpioNumber, "in", "both");
@@ -31,12 +32,11 @@ export default class OnOff extends IOComponent {
             });
         }
 
-        //initialize pin to offstate
-        this.gpio.writeSync(this.config.offState);
+        // initialize pin to offstate (actually not needed since creating a gpio object sets it to its offstate)
+        // this.gpio.writeSync(0);
 
         //watch for requestes from frontend
         this.ios.ipcMain.on(this.name, (_: IpcMainEvent, message: any) => {
-            console.log(message);
             // if the message is read, send the current gpio state back
             if (message === "read") {
                 if (config.feedbackGpioNumber) {
@@ -47,6 +47,7 @@ export default class OnOff extends IOComponent {
             }
             // if the message is toggle, flip the state
             else if (message === "toggle") {
+                // if it is not scheduled
                 if (!config.scheduleTime) {
                     let newState = this._getOppositeState(this.gpio.readSync());
                     this.gpio.write(newState, (err) => {
@@ -60,17 +61,21 @@ export default class OnOff extends IOComponent {
                     if (this.scheduleTimeout) {
                         return;
                     }
-                    this.gpio.write(
-                        this._getOppositeState(this.config.offState),
-                        this._writeCallback
-                    );
+                    this.gpio.write(1, this._writeCallback);
                     this.scheduleTimeout = setTimeout(() => {
                         this.scheduleTimeout = null;
-                        this.gpio.write(this.config.offState, this._writeCallback);
+                        this.gpio.write(0, this._writeCallback);
                     }, config.scheduleTime);
                 }
             }
         });
+    }
+
+    public close() {
+        this.gpio.unexport();
+        if (this.feedback) {
+            this.feedback.unexport();
+        }
     }
 
     // calculate new state by subtracting current value from 1 (1-0 = 1, 1-1 = 0)

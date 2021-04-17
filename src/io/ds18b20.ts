@@ -1,9 +1,8 @@
-import IOComponent from "./ioComponent";
-import { IOs } from "./io";
+import IOComponent, { IOComponentConfig } from "./ioComponent";
+import { RendererIO } from "./io";
 import sensor from "ds18b20-raspi-typescript";
 
-export interface DS18B20Config {
-    name: string;
+export interface DS18B20Config extends IOComponentConfig {
     sensorId: string;
     readingInterval: number;
     changeInsensitivity: number;
@@ -15,8 +14,8 @@ export default class DS18B20 extends IOComponent {
     private lastTemp: number | null = null;
     private temp: number | null;
 
-    constructor(config: DS18B20Config, ios: IOs) {
-        super(config.name, ios);
+    constructor(config: DS18B20Config, ios: RendererIO) {
+        super(config, ios);
         this.config = config;
         this.temp = sensor.readC(this.config.sensorId, 1);
         this.interval = setInterval(() => {
@@ -40,7 +39,7 @@ export default class DS18B20 extends IOComponent {
                 return;
             }
 
-            console.log((this.temp = result));
+            this.temp = result;
             if (
                 this.temp !== null &&
                 (this.lastTemp === null ||
