@@ -32,8 +32,8 @@ export default class OnOff extends IOComponent {
             });
         }
 
-        // initialize pin to offstate (actually not needed since creating a gpio object sets it to its offstate)
-        // this.gpio.writeSync(0);
+        // initialize pin to offstate
+        this.gpio.writeSync(0);
 
         //watch for requestes from frontend
         this.ios.ipcMain.on(this.name, (_: IpcMainEvent, message: any) => {
