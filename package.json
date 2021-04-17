@@ -43,6 +43,7 @@
     },
     "build": {
         "appId": "com.openauto.helper",
+        "artifactName": "openauto-helper.${ext}",
         "linux": {
             "target": [
                 "AppImage"
