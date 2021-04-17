@@ -50,7 +50,8 @@ const config: Config = {
             resolution: 1,
             gain: 0,
             busNumber: 1,
-            readingInterval: 25,
+            // interval specifies interval for reading one channel
+            readingInterval: 100,
             changeInsensitivity: 10,
         },
         channels: [
