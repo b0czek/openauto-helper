@@ -1,5 +1,4 @@
 import path from "path";
-import url from "url";
 
 import { app, BrowserWindow, ipcMain } from "electron";
 
@@ -17,11 +16,7 @@ function createWindow() {
         },
     });
     win.loadURL(
-        url.format({
-            pathname: path.join(__dirname, "public", "index.html"),
-            protocol: "file:",
-            slashes: true,
-        })
+        `file://${__dirname}/public/index.html`
     );
     win.setPosition(0, 0);
     win.setFullScreen(true);

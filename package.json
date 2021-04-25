@@ -27,8 +27,7 @@
         "i2c-bus": "^5.2.1",
         "iniparser": "^1.0.5",
         "lodash": "^4.17.21",
-        "onoff": "^6.0.2",
-        "whatwg-url": "^8.5.0"
+        "onoff": "^6.0.2"
     },
     "devDependencies": {
         "@types/i2c-bus": "^5.1.0",
