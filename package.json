@@ -8,7 +8,7 @@
         "build": "tsc",
         "postbuild": "yarn run gauge:build && yarn run copy-files",
         "copy-files": "cp -r src/public build",
-        "dev": "electron build/main.js",
+        "dev": "yarn build && electron build/main.js",
         "pack": "electron-builder --dir",
         "dist": "electron-builder --armv7l",
         "gauge:build": "coffee -c -o src/public/gauge.js src/gauge/gauge.coffee",
