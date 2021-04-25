@@ -13,7 +13,7 @@
     <div class="container">
         <div class="topBar">
             <div class="ecoIndicatorContainer" id="ecoIndicatorContainer">
-                <img src="eco.png" alt="eco" class="ecoIndicator ecoIndicatorInactive" id="ecoIndicator">
+                <img src="eco.png" alt="eco" class="unselectable ecoIndicator ecoIndicatorInactive" id="ecoIndicator">
 
             </div>
         </div>
@@ -21,20 +21,16 @@
             <div class="contentTile">
                 <canvas id="gauge"></canvas>
                 <h2 id="value">0.00</h2>
-                <div>
-                    <p>
-                        Ciśnienie oleju
-                    </p>
-                </div>
+
             </div>
             <div class="contentTile">
-                <div id="watch" class="time">00:00</div>
+                <div id="watch" class="time unselectable">00:00</div>
             </div>
         </div>
-        <div class="bottomBar">
+        <div class=" bottomBar">
             <div class="bottomBarContent" id="bottomBarContent">
                 <div class="fogLightsOutline" id="fogLightsOutline">
-                    <img src=" foglights.png" class="fogLightsSwitch" id="fogLightsSwitch" />
+                    <img src=" foglights.png" class="unselectable fogLightsSwitch" id="fogLightsSwitch" />
 
                 </div>
 
