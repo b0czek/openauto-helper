@@ -24,21 +24,29 @@
     "license": "ISC",
     "dependencies": {
         "ds18b20-raspi-typescript": "^0.4.0",
+        "electron-is-dev": "^2.0.0",
+        "electron-reload": "^1.5.0",
         "i2c-bus": "^5.2.1",
         "iniparser": "^1.0.5",
         "lodash": "^4.17.21",
-        "onoff": "^6.0.2"
+        "onoff": "^6.0.2",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "react-scripts": "^4.0.3"
     },
     "devDependencies": {
         "@types/i2c-bus": "^5.1.0",
         "@types/iniparser": "^0.0.29",
         "@types/lodash": "^4.14.168",
         "@types/node": "^14.14.37",
-        "@types/whatwg-url": "^8.2.0",
+        "@types/react": "^17.0.4",
+        "@types/react-dom": "^17.0.3",
         "coffeescript": "^2.5.1",
+        "concurrently": "^6.0.0",
         "electron": "^12.0.2",
         "electron-builder": "^22.10.5",
-        "typescript": "^4.2.4"
+        "typescript": "^4.2.4",
+        "wait-on": "^5.3.0"
     },
     "build": {
         "appId": "com.openauto.helper",
@@ -46,8 +54,7 @@
         "linux": {
             "target": [
                 "AppImage"
-            ],
-            "asar": false
+            ]
         },
         "extends": null,
         "files": [
