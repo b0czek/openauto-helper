@@ -67,16 +67,13 @@ const config: Config = {
                 type: "onoff",
                 name: "foglights.0",
                 gpioNumber: 5,
-                activeLow: true,
+                activeLow: false,
             },
             {
                 type: "onoff",
                 name: "eco.0",
                 gpioNumber: 16,
-                activeLow: true,
-                feedbackGpioNumber: 13,
-                scheduleTime: 500,
-                resetStateAtStart: true,
+                activeLow: false,
             },
             {
                 type: "ds18b20",
