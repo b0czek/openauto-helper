@@ -1,6 +1,12 @@
 .contentTile {
     background-color: rgba(0, 0, 0, 0.25);
-    height: 450px;
     border-radius: 20px;
     margin-bottom: 10px;
+}
+.contentTileLong {
+    height: 450px;
+}
+
+.contentTileShort {
+    height: 200px;
 }
