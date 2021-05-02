@@ -1,3 +1,4 @@
+import "./ContentTiles.scss";
 export const ContentTile = (props) => (
     <div className="contentTile">{props.children}</div>
 );

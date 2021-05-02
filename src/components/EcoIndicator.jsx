@@ -1,4 +1,5 @@
 import ecoIcon from "../imgs/eco.png";
+import "./EcoIndicator.scss";
 import React from "react";
 import ApiFetchComponent from "./ApiFetchComponent";
 class EcoIndicator extends ApiFetchComponent {

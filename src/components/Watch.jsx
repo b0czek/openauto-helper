@@ -1,4 +1,5 @@
 import { ContentTile } from "./ContentTiles";
+import "./Watch.scss";
 import React, { useEffect, useState } from "react";
 const Watch = () => {
     const [time, setTime] = useState();

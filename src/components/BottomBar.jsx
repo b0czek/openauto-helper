@@ -1,4 +1,5 @@
 import FogLightsSwitch from "./FogLightsSwitch";
+import "./BottomBar.scss";
 const BottomBar = () => (
     <div className="bottomBar">
         <div className="bottomBarContent">
