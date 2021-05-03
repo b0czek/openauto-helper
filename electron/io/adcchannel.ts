@@ -29,9 +29,12 @@ export default class AdcChannel extends IOComponent {
     }
 
     private _mcpCallback(err: any) {
+        if (err) {
+            this.sendState(err);
+            return;
+        }
         let value = this._calculateValue();
-
-        this.sendState(err, value);
+        this.sendState(null, value);
     }
 
     private _calculateValue(): number {
@@ -43,7 +46,9 @@ export default class AdcChannel extends IOComponent {
         // https://stackoverflow.com/questions/51494376/how-to-transform-one-numerical-scale-into-another
         // x in [a,b] => z = (d-c) * (x-a) / (b-a) + c in [c,d]
         return (
-            ((maxValue - minValue) * (voltage - minVoltage)) / (maxVoltage - minVoltage) + minValue
+            ((maxValue - minValue) * (voltage - minVoltage)) /
+                (maxVoltage - minVoltage) +
+            minValue
         );
     }
 }
