@@ -28,14 +28,14 @@ export default class AdcChannel extends IOComponent {
         this.mcp.unwatch(this.config.adcChannel, this._mcpCallback);
     }
 
-    private _mcpCallback(err: any) {
+    private _mcpCallback = (err: any) => {
         if (err) {
             this.sendState(err);
             return;
         }
         let value = this._calculateValue();
         this.sendState(null, value);
-    }
+    };
 
     private _calculateValue(): number {
         let voltage = this.mcp.getVoltage(this.config.adcChannel)!;
