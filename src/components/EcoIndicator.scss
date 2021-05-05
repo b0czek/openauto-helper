@@ -1,0 +1,26 @@
+.ecoIndicatorContainer {
+    margin: auto;
+    left: 22px;
+    height: 75%;
+    position: relative;
+    z-index: 50;
+}
+
+.ecoIndicatorContainer::before {
+    position: absolute;
+    content: "";
+    top: -20px;
+    right: -100px;
+    left: -100px;
+    bottom: -400px;
+    z-index: 40;
+}
+
+.ecoIndicator {
+    height: 100%;
+}
+
+.ecoIndicatorInactive {
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+}

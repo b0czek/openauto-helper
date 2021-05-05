@@ -1,7 +1,7 @@
 import path from "path";
-import url from "url";
-
+import isDev from 'electron-is-dev';
 import { app, BrowserWindow, ipcMain } from "electron";
+
 
 import IO from "./io/io";
 
@@ -16,13 +16,23 @@ function createWindow() {
             preload: path.join(__dirname, "preload.js"),
         },
     });
-    win.loadURL(
-        url.format({
-            pathname: path.join(__dirname, "public", "index.html"),
-            protocol: "file:",
-            slashes: true,
-        })
-    );
+    if(isDev) {
+        win.loadURL('http://localhost:3000/index.html');
+
+    }
+    else {
+        win.loadURL(`file://${__dirname}/public/index.html`);
+    }
+
+    // Hot Reloading
+    if (isDev) {
+        require('electron-reload')(__dirname, {
+        electron: path.join(__dirname, '..', '..', 'node_modules', '.bin', 'electron'),
+        forceHardReset: true,
+        hardResetMethod: 'exit'
+        });
+    }
+
     win.setPosition(0, 0);
     win.setFullScreen(true);
 

@@ -2,18 +2,16 @@
     "name": "openauto-helper",
     "version": "1.0.0",
     "description": "smakowity wspomagacz brachu",
-    "main": "build/main.js",
+    "main": "build/electron/main.js",
     "scripts": {
         "postinstall": "electron-builder install-app-deps",
-        "build": "tsc",
-        "postbuild": "yarn run gauge:build && yarn run copy-files",
-        "copy-files": "cp -r src/public build",
-        "dev": "yarn build && electron build/main.js",
-        "pack": "electron-builder --dir",
-        "dist": "electron-builder --armv7l",
-        "gauge:build": "coffee -c -o src/public/gauge.js src/gauge/gauge.coffee",
-        "push": "rsync -r ./ pi@192.168.1.21:/home/pi/openauto-helper --filter=':- .gitignore'",
-        "pipeline": "yarn run build && yarn run dist"
+        "react:start": "react-scripts start",
+        "react:build": "react-scripts build",
+        "react:test": "react-scripts test",
+        "react:eject": "react-scripts eject",
+        "dev": "concurrently \"BROWSER=none yarn react:start\" \"wait-on http://localhost:3000 && tsc -p electron -w \" \"wait-on http://localhost:3000 && tsc -p electron && electron .\"",
+        "build": "yarn react:build && tsc -p electron && electron-builder --armv7l",
+        "push": "rsync -r ./ pi@raspberrypi:/home/pi/openauto-helper --filter=':- .gitignore'"
     },
     "keywords": [],
     "author": {
@@ -24,22 +22,30 @@
     "license": "ISC",
     "dependencies": {
         "ds18b20-raspi-typescript": "^0.4.0",
+        "electron-is-dev": "^2.0.0",
+        "electron-reload": "^1.5.0",
+        "gauge-js-outlined": "^1.3.7",
         "i2c-bus": "^5.2.1",
         "iniparser": "^1.0.5",
         "lodash": "^4.17.21",
+        "node-sass": "^5.0.0",
         "onoff": "^6.0.2",
-        "whatwg-url": "^8.5.0"
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "react-scripts": "^4.0.3"
     },
     "devDependencies": {
         "@types/i2c-bus": "^5.1.0",
         "@types/iniparser": "^0.0.29",
         "@types/lodash": "^4.14.168",
         "@types/node": "^14.14.37",
-        "@types/whatwg-url": "^8.2.0",
-        "coffeescript": "^2.5.1",
+        "@types/react": "^17.0.4",
+        "@types/react-dom": "^17.0.3",
+        "concurrently": "^6.0.0",
         "electron": "^12.0.2",
         "electron-builder": "^22.10.5",
-        "typescript": "^4.2.4"
+        "typescript": "^4.2.4",
+        "wait-on": "^5.3.0"
     },
     "build": {
         "appId": "com.openauto.helper",
@@ -47,8 +53,7 @@
         "linux": {
             "target": [
                 "AppImage"
-            ],
-            "asar": false
+            ]
         },
         "extends": null,
         "files": [
@@ -57,5 +62,20 @@
         "directories": {
             "buildResources": "assets"
         }
+    },
+    "eslintConfig": {
+        "extends": "react-app"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
     }
 }
