@@ -1,6 +1,6 @@
 import ContentTile from "./ContentTiles";
 import "./Watch.scss";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 class Watch extends React.Component {
     state = {
