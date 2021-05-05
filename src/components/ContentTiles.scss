@@ -2,6 +2,24 @@
     background-color: rgba(0, 0, 0, 0.25);
     border-radius: 20px;
     margin-bottom: 10px;
+
+    .contentTileContent {
+        width: 100%;
+        height: 292px;
+        font-weight: bold;
+        font-size: 100px;
+    }
+    .contentTileTextContainer {
+        display: flex;
+        align-items: center;
+    }
+    .contentTileText {
+        height: 130px;
+        font-size: 60px;
+        text-align: center;
+        padding-top: 24px;
+        margin: auto;
+    }
 }
 .contentTileLong {
     height: 450px;

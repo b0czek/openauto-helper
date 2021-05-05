@@ -6,7 +6,7 @@ class FogLightsSwitch extends ApiFetchComponent {
     render() {
         return (
             <div
-                className={`fogLightsOutline ${
+                className={`centerChildren fogLightsOutline ${
                     this.state.apiState ? "fogLightsSwitched" : ""
                 }`}>
                 <img

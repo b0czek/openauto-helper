@@ -1,5 +1,5 @@
 import React, { createRef } from "react";
-import { ContentTile } from "./ContentTiles";
+import ContentTile from "./ContentTiles";
 import ApiFetchComponent from "./ApiFetchComponent";
 import { Gauge } from "gauge-js-outlined/dist/gauge";
 import "./OilPressureGauge.scss";
@@ -56,10 +56,14 @@ class OilPressureGauge extends ApiFetchComponent {
     render() {
         return (
             <ContentTile>
-                <canvas ref={this.canvas} className="oilPressureGauge"></canvas>
-                <div className="oilPressureValue">
+                <ContentTile.Content>
+                    <canvas
+                        ref={this.canvas}
+                        className="oilPressureGauge"></canvas>
+                </ContentTile.Content>
+                <ContentTile.Text className="oilPressureValue unselectable">
                     {this.state.apiState ?? "-.--"}
-                </div>
+                </ContentTile.Text>
             </ContentTile>
         );
     }

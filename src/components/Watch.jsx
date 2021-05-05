@@ -1,4 +1,4 @@
-import { ContentTile } from "./ContentTiles";
+import ContentTile from "./ContentTiles";
 import "./Watch.scss";
 import React, { useEffect, useState } from "react";
 
@@ -22,8 +22,8 @@ class Watch extends React.Component {
     render() {
         return (
             <ContentTile className="unselectable watch">
-                <div className="time">{this.state.time}</div>
-                <div className="date">{this.state.date}</div>
+                <ContentTile.Content>{this.state.time}</ContentTile.Content>
+                <ContentTile.Text>{this.state.date}</ContentTile.Text>
             </ContentTile>
         );
     }
@@ -36,9 +36,10 @@ const getTimeString = () => {
 
 const getDateString = () => {
     let now = new Date();
-    return `${leftPad(now.getDate(), 2)} 
-    / ${leftPad(now.getMonth() + 1, 2)} 
-    / ${now.getFullYear()}`;
+    return `${leftPad(now.getDate(), 2)}/${leftPad(
+        now.getMonth() + 1,
+        2
+    )}/${now.getFullYear()}`;
 };
 
 const leftPad = (number, length) => number.toString().padStart(length, "0");
