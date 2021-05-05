@@ -11,7 +11,7 @@
         "react:eject": "react-scripts eject",
         "dev": "concurrently \"BROWSER=none yarn react:start\" \"wait-on http://localhost:3000 && tsc -p electron -w \" \"wait-on http://localhost:3000 && tsc -p electron && electron .\"",
         "build": "yarn react:build && tsc -p electron && electron-builder --armv7l",
-        "push": "rsync -r ./ pi@192.168.1.21:/home/pi/openauto-helper --filter=':- .gitignore'"
+        "push": "rsync -r ./ pi@raspberrypi:/home/pi/openauto-helper --filter=':- .gitignore'"
     },
     "keywords": [],
     "author": {
