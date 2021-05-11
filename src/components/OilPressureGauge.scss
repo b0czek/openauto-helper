@@ -1,25 +1,28 @@
+$oil-gauge-height: 300px;
+$oil-gauge-width: 350px;
+
+$oil-icon-size: 60px;
+$oil-icon-spacing: 60px;
+
 .oilPressureGauge {
-    width: 350px;
-    height: 300px;
+    width: $oil-gauge-width;
+    height: $oil-gauge-height;
     display: block;
     margin: auto;
 }
-$oil-icon-size: 60px;
-$oil-icon-spacing: 10px;
-.oilPressureValue {
+.attachOilIcon {
     position: relative;
     z-index: 5;
-    padding-left: $oil-icon-size + $oil-icon-spacing;
 }
 
-.oilPressureValue::before {
+.attachOilIcon::after {
     content: "";
     background-image: url("/imgs/oilcan.png");
     background-size: cover;
     width: $oil-icon-size;
     height: $oil-icon-size;
-    left: 0px;
-    top: $oil-icon-size / 2;
+    left: ($oil-gauge-width / 2) - ($oil-icon-size / 2);
+    top: $oil-gauge-height - $oil-icon-spacing;
     filter: invert(100%);
     position: absolute;
     display: block;

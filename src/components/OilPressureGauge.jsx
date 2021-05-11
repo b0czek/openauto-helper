@@ -57,9 +57,11 @@ class OilPressureGauge extends ApiFetchComponent {
         return (
             <ContentTile>
                 <ContentTile.Content>
-                    <canvas
-                        ref={this.canvas}
-                        className="oilPressureGauge"></canvas>
+                    <div className="attachOilIcon">
+                        <canvas
+                            ref={this.canvas}
+                            className="oilPressureGauge"></canvas>
+                    </div>
                 </ContentTile.Content>
                 <ContentTile.Text className="oilPressureValue unselectable">
                     {this.state.apiState ?? "-.--"}
