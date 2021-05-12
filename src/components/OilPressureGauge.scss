@@ -1,12 +1,8 @@
-$oil-gauge-height: 300px;
-$oil-gauge-width: 350px;
-
-$oil-icon-size: 60px;
-$oil-icon-spacing: 80px;
+@import "../config.scss";
 
 .oilPressureGauge {
-    width: $oil-gauge-width;
-    height: $oil-gauge-height;
+    width: $oilgauge-width;
+    height: $oilgauge-height;
     display: block;
     margin: auto;
 }
@@ -21,8 +17,8 @@ $oil-icon-spacing: 80px;
     background-size: cover;
     width: $oil-icon-size;
     height: $oil-icon-size;
-    left: ($oil-gauge-width / 2) - ($oil-icon-size / 2);
-    top: $oil-gauge-height - $oil-icon-spacing;
+    left: ($oilgauge-width / 2) - ($oil-icon-size / 2);
+    top: $oilgauge-height - $oil-icon-spacing;
     filter: invert(100%);
     position: absolute;
     display: block;

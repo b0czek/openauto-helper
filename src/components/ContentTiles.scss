@@ -1,25 +1,22 @@
-$content-tile-height: 429px;
-$content-tile-spacing: 6px;
-$content-tile-text-spacing: 14px;
-$content-tile-content-height: 285px;
+@import "../config.scss";
 .contentTile {
-    background-color: rgba(0, 0, 0, 0.25);
-    border-radius: 20px;
+    background-color: $content-tile-background-color;
+    border-radius: $content-tile-border-radius;
     margin-bottom: $content-tile-spacing;
 
     .contentTileContent {
         width: 100%;
         height: $content-tile-content-height;
         font-weight: bold;
-        font-size: 100px;
+        font-size: $content-tile-content-font-size;
     }
     .contentTileTextContainer {
         display: flex;
         align-items: center;
     }
     .contentTileText {
-        height: 130px;
-        font-size: 60px;
+        height: $content-tile-text-height;
+        font-size: $content-tile-text-font-size;
         text-align: center;
         padding-top: $content-tile-text-spacing;
         margin: auto;
