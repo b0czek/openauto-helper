@@ -12,7 +12,7 @@ class ApiFetchComponent extends React.Component {
     }
 
     handleApiRequest(command, ...props) {
-        window.api.send(command, ...props);
+        window.api.send(this.props.ioName, command, ...props);
     }
 
     initializeApi() {
