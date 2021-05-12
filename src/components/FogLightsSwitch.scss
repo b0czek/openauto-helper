@@ -10,6 +10,13 @@
     filter: invert(100%);
     height: $foglights-icon-size;
 }
+.fogLightsOutline::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: $bottom-bar-height;
+}
 
 .fogLightsSwitched {
     border: $foglights-outline-thickness solid;

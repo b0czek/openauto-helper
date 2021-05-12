@@ -8,12 +8,12 @@ class FogLightsSwitch extends ApiFetchComponent {
             <div
                 className={`centerChildren fogLightsOutline ${
                     this.state.apiState ? "fogLightsSwitched" : ""
-                }`}>
+                }`}
+                onClick={() => this.handleApiRequest("toggle")}>
                 <img
                     src={fogLightsIcon}
                     alt="Fog Lights Icon"
                     className={`unselectable fogLightsSwitch`}
-                    onClick={() => this.handleApiRequest("toggle")}
                 />
             </div>
         );
