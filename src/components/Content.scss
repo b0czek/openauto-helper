@@ -1,4 +1,6 @@
+@import "../config.scss";
+
 .content {
-    margin-top: 38px;
-    margin-left: 49px;
+    margin-top: $content-top-margin;
+    margin-left: $content-left-margin;
 }

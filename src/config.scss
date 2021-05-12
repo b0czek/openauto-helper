@@ -1,0 +1,52 @@
+/* #region topbar */
+$top-bar-height: 80px;
+/* #endregion topbar*/
+
+/* #region ecoindicator */
+$ecoindicator-icon-size: 75%;
+$ecoindicator-hitbox-left: -100px;
+$ecoindicator-hitbox-right: -100px;
+$ecoindicator-hitbox-bottom: -400px;
+$ecoindicator-hitbox-top: -20px;
+/* #endregion ecoindicator */
+
+/* #region content */
+$content-top-margin: 38px;
+$content-left-margin: 49px;
+/* #endregion content*/
+
+/* #region contenttile */
+$content-tile-height: 429px;
+$content-tile-spacing: 6px;
+$content-tile-border-radius: 20px;
+$content-tile-background-color: rgba(0, 0, 0, 0.25);
+
+$content-tile-content-height: 285px;
+$content-tile-content-font-size: 100px;
+
+$content-tile-text-height: 130px;
+$content-tile-text-font-size: 60px;
+$content-tile-text-spacing: 14px;
+/* #endregion contenttile */
+
+/* #region oilgauge */
+$oilgauge-height: 300px;
+$oilgauge-width: 350px;
+
+$oil-icon-size: 60px;
+$oil-icon-spacing: 80px;
+/* #endregion oilgauge */
+
+/* #region bottombar */
+$bottom-bar-height: 219px;
+
+/* #endregion bottombar */
+
+/* #region foglights */
+$foglights-outline-size: 55%;
+$foglights-outline-color: rgba(245, 180, 42, 1);
+$foglights-outline-thickness: 12px;
+$foglights-icon-size: 75%;
+$fogligths-animation-duration: 4s;
+$foglights-animation-pulse-target: rgba(245, 180, 42, 0.3);
+/* #endregion foglights */

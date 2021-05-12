@@ -1,7 +1,9 @@
+@import "../config.scss";
+
 .ecoIndicatorContainer {
     margin: auto;
-    left: 22px;
-    height: 75%;
+    left: $content-left-margin / 2;
+    height: $ecoindicator-icon-size;
     position: relative;
     z-index: 50;
 }
@@ -9,10 +11,10 @@
 .ecoIndicatorContainer::before {
     position: absolute;
     content: "";
-    top: -20px;
-    right: -100px;
-    left: -100px;
-    bottom: -400px;
+    top: $ecoindicator-hitbox-top;
+    right: $ecoindicator-hitbox-right;
+    left: $ecoindicator-hitbox-left;
+    bottom: $ecoindicator-hitbox-bottom;
     z-index: 40;
 }
 

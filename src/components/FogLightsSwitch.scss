@@ -1,5 +1,6 @@
+@import "../config.scss";
 .fogLightsOutline {
-    height: 55%;
+    height: $foglights-outline-size;
     aspect-ratio: 1/1;
 }
 
@@ -7,15 +8,15 @@
     display: block;
     margin: auto;
     filter: invert(100%);
-    height: 75%;
+    height: $foglights-icon-size;
 }
 
 .fogLightsSwitched {
-    border: 12px solid;
-    border-color: #f5b42a;
+    border: $foglights-outline-thickness solid;
+    border-color: $foglights-outline-color;
     border-radius: 50%;
     animation-name: fogLightsPulse;
-    animation-duration: 4s;
+    animation-duration: $fogligths-animation-duration;
     animation-iteration-count: infinite;
     animation-direction: alternate;
 }
@@ -23,11 +24,11 @@
 @keyframes fogLightsPulse {
     0%,
     50% {
-        border-color: rgba(245, 180, 42, 1);
+        border-color: $foglights-outline-color;
     }
 
     100% {
-        border-color: rgba(245, 180, 42, 0.3);
+        border-color: $foglights-animation-pulse-target;
     }
 }
 

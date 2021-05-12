@@ -1,5 +1,4 @@
 import ContentTile from "./ContentTiles";
-import "./Watch.scss";
 import React from "react";
 
 class Watch extends React.Component {
@@ -21,7 +20,7 @@ class Watch extends React.Component {
     }
     render() {
         return (
-            <ContentTile className="unselectable watch">
+            <ContentTile className="unselectable">
                 <ContentTile.Content>{this.state.time}</ContentTile.Content>
                 <ContentTile.Text>{this.state.date}</ContentTile.Text>
             </ContentTile>
