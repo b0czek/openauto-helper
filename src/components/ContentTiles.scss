@@ -1,11 +1,15 @@
+$content-tile-height: 426px;
+$content-tile-spacing: 6px;
+$content-tile-text-spacing: 14px;
+$content-tile-content-height: 285px;
 .contentTile {
     background-color: rgba(0, 0, 0, 0.25);
     border-radius: 20px;
-    margin-bottom: 10px;
+    margin-bottom: $content-tile-spacing;
 
     .contentTileContent {
         width: 100%;
-        height: 292px;
+        height: $content-tile-content-height;
         font-weight: bold;
         font-size: 100px;
     }
@@ -17,12 +21,12 @@
         height: 130px;
         font-size: 60px;
         text-align: center;
-        padding-top: 24px;
+        padding-top: $content-tile-text-spacing;
         margin: auto;
     }
 }
 .contentTileLong {
-    height: 450px;
+    height: $content-tile-height;
 }
 
 .contentTileShort {
