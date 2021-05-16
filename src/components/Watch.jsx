@@ -35,10 +35,10 @@ const getTimeString = () => {
 
 const getDateString = () => {
     let now = new Date();
-    return `${leftPad(now.getDate(), 2)}/${leftPad(
+    return `${leftPad(now.getDate(), 2)}.${leftPad(
         now.getMonth() + 1,
         2
-    )}/${now.getFullYear()}`;
+    )}, ${now.toLocaleString("pl-PL", { weekday: "short" })}`;
 };
 
 const leftPad = (number, length) => number.toString().padStart(length, "0");
