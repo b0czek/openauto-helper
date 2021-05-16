@@ -2,7 +2,7 @@ import ApiFetchComponent from "./ApiFetchComponent";
 import { ShortTile } from "./ContentTiles";
 import thermometerIcon from "../imgs/thermometer.png";
 import vanIcon from "../imgs/van.png";
-import "./TemperatureTile.scss";
+import "./Thermometer.scss";
 class TemperatureTile extends ApiFetchComponent {
     render() {
         return (
