@@ -1,3 +1,7 @@
 .temperatureValue::after {
     content: "°C";
 }
+.temperatureIcon {
+    height: 40px;
+    filter: invert(100%);
+}
