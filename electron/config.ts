@@ -74,6 +74,8 @@ const config: Config = {
                 name: "eco.0",
                 gpioNumber: 16,
                 activeLow: false,
+                feedbackGpioNumber: 13,
+                scheduleTime: 500,
             },
             {
                 type: "ds18b20",
