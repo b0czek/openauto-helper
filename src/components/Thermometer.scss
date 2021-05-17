@@ -1,7 +1,13 @@
+@import "../config.scss";
+
 .temperatureValue::after {
     content: "°C";
 }
-.temperatureIcon {
-    height: 40px;
+.icon {
+    height: $content-tile-short-font-size;
+    filter: invert(100%);
+}
+.thermometer {
+    height: $content-tile-short-font-size + 8px;
     filter: invert(100%);
 }

@@ -11,10 +11,9 @@ class TemperatureTile extends ApiFetchComponent {
                     <img
                         src={thermometerIcon}
                         alt="thermometer"
-                        className="temperatureIcon"
-                        style={{ height: "48px" }}
+                        className="thermometer"
                     />
-                    <img src={vanIcon} alt="van" className="temperatureIcon" />
+                    <img src={vanIcon} alt="van" className="icon" />
                 </ShortTile.Text>
                 <ShortTile.Content>
                     <div className="temperatureValue">
