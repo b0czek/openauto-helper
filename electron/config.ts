@@ -84,6 +84,14 @@ const config: Config = {
                 changeInsensitivity: 0.1,
                 readingInterval: 1000,
             },
+            {
+                type: "gpioBuffer",
+                name: "reverseCamera.0",
+                inputGpio: 22,
+                outputGpio: 19,
+                activeLow: false,
+                bufferInterval: 5000,
+            },
         ],
     },
 };
