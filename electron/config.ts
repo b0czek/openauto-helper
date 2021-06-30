@@ -66,16 +66,16 @@ const config: Config = {
             {
                 type: "onoff",
                 name: "foglights.0",
-                gpioNumber: 5,
+                gpioNumber: 19,
                 activeLow: false,
             },
             {
                 type: "onoff",
                 name: "eco.0",
-                gpioNumber: 16,
+                gpioNumber: 26,
                 activeLow: false,
-                feedbackGpioNumber: 13,
-                scheduleTime: 500,
+                feedbackGpioNumber: 21,
+                scheduleTime: 500
             },
             {
                 type: "ds18b20",
@@ -87,10 +87,10 @@ const config: Config = {
             {
                 type: "gpioBuffer",
                 name: "reverseCamera.0",
-                inputGpio: 22,
-                outputGpio: 19,
+                inputGpio: 20,
+                outputGpio: 27,
                 activeLow: false,
-                bufferInterval: 5000,
+                bufferInterval: 4000,
             },
         ],
     },
