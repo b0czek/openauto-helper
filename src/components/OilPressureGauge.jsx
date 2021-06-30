@@ -64,7 +64,7 @@ class OilPressureGauge extends ApiFetchComponent {
                     </div>
                 </ContentTile.Content>
                 <ContentTile.Text className="oilPressureValue unselectable">
-                    {this.state.apiState ?? "-.--"}
+                    {this.state.apiState != null ? this.state.apiState.toFixed(2): "-.--"}
                 </ContentTile.Text>
             </ContentTile>
         );
