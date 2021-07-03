@@ -81,6 +81,7 @@ export default class MCP3424 {
             channel,
         };
         this.channelsData[channel] = newChannel;
+        // if the opened channel is the only one, start reading data from adc
         if (this._getOpenedChannels().length == 1) {
             this.currentChannel = newChannel;
             this._readDataContinuously();
@@ -104,13 +105,17 @@ export default class MCP3424 {
         if (chan !== null) {
             chan.callbacks.push(callback);
         } else {
-            throw new Error("Cannot watch not opened channel. Try opening it first.");
+            throw new Error(
+                "Cannot watch not opened channel. Try opening it first."
+            );
         }
     }
     public unwatch(channel: Channels, callback: WatchCallback): void {
         let chan = this.channelsData[channel];
         if (chan !== null && chan.callbacks.length > 0) {
-            this.channelsData[channel]!.callbacks = chan.callbacks.filter((cb) => cb !== callback);
+            this.channelsData[channel]!.callbacks = chan.callbacks.filter(
+                (cb) => cb !== callback
+            );
         } else {
             throw new Error(
                 "Cannot unwatch not opened channel or there are no callbacks for this channels"
@@ -127,7 +132,9 @@ export default class MCP3424 {
     }
 
     public getMv(channel: Channels): number | null {
-        return this.channelsData[channel] ? this.channelsData[channel]!.value : null;
+        return this.channelsData[channel]
+            ? this.channelsData[channel]!.value
+            : null;
     }
 
     private _getMvDivisor(): number {
@@ -223,7 +230,8 @@ export default class MCP3424 {
                 return reject(err);
             }
             // mask the config  and if the resolution is 18 bit, then there are 3 bytes for data
-            let dataBytes = (command & MCP342X_RES_FIELD) === MCP342X_18_BIT ? 3 : 2;
+            let dataBytes =
+                (command & MCP342X_RES_FIELD) === MCP342X_18_BIT ? 3 : 2;
 
             // convert read bytes
             let result: number = br.readUIntBE(0, dataBytes);
