@@ -20,7 +20,7 @@ class Watch extends React.Component {
     }
     render() {
         return (
-            <ContentTile className="unselectable">
+            <ContentTile>
                 <ContentTile.Content>{this.state.time}</ContentTile.Content>
                 <ContentTile.Text>{this.state.date}</ContentTile.Text>
             </ContentTile>

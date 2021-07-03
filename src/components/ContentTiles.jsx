@@ -1,9 +1,13 @@
 import "./ContentTiles.scss";
+import "../index.scss";
 import React from "react";
 //#region RegularTile
 const ContentTile = React.forwardRef((props, ref) => (
     <div
-        className={mergeClasses(`contentTile contentTileLong`, props)}
+        className={mergeClasses(
+            `contentTile contentTileLong unselectable`,
+            props
+        )}
         ref={ref}>
         {props.children}
     </div>
@@ -26,7 +30,10 @@ const ContentTileText = (props) => (
 //#region ShortTile
 const ContentTileShort = React.forwardRef((props, ref) => (
     <div
-        className={mergeClasses("contentTile contentTileShort", props)}
+        className={mergeClasses(
+            "contentTile contentTileShort unselectable",
+            props
+        )}
         ref={ref}>
         {props.children}
     </div>
