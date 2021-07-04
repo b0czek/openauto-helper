@@ -7,7 +7,7 @@ export interface Config {
 
 const config: Config = {
     appearance: {
-        iniFilePath: "/home/dariusz/config.ini",
+        iniFilePath: "/home/pi/.openauto/config/openauto_system.ini",
         fallbackValues: {
             day: {
                 WallpaperPath: "",
