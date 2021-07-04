@@ -1,12 +1,12 @@
 import React from "react";
 
-import { AppearanceStateProvider, AppearanceContext } from "./AppearanceState";
-
 import TopBar from "./TopBar";
 import Content from "./Content";
 import BottomBar from "./BottomBar";
 import "./App.scss";
+import Appearance from "../appearance";
 
+// #region appbackground
 const parseHexColor = (color) => {
     color = color.slice(1); //drop the #
     let result = [];
@@ -29,24 +29,23 @@ const createBackgroundGradient = (color) => {
         ${createRGBString(backgroundColor)} 50%,
         ${createRGBString(targetGradientColors)} 100%)`;
 };
+// #endregion appbackground
 
 const App = () => {
-    const appearance = React.useContext(AppearanceContext);
+    let appearance = Appearance.useContainer();
     console.log(`???? rerender???`);
     return (
-        <AppearanceStateProvider>
-            <div
-                className="container"
-                style={{
-                    background: createBackgroundGradient(
-                        appearance.night.BackgroundColor
-                    ),
-                }}>
-                <TopBar />
-                <Content />
-                <BottomBar />
-            </div>
-        </AppearanceStateProvider>
+        <div
+            className="container"
+            style={{
+                background: createBackgroundGradient(
+                    appearance.night.BackgroundColor
+                ),
+            }}>
+            <TopBar />
+            <Content />
+            <BottomBar />
+        </div>
     );
 };
 

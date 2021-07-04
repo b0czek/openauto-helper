@@ -57,7 +57,7 @@ export default class AppAppearance {
                         AppAppearance.readColorConfig();
 
                     if (!lodash.isEqual(newConfig, AppAppearance.colorConfig)) {
-                        console.log(`Detected config change.`);
+                        console.log(`Detected AutoApp's config change.`);
                         callback(newConfig);
                         AppAppearance.colorConfig = newConfig;
                     }
@@ -72,7 +72,6 @@ export default class AppAppearance {
             webContents.send("appearance", AppAppearance.colorConfig);
         });
         AppAppearance.watchForConfigChanges((newConfig) => {
-            console.log(`sending new appearance data`);
             webContents.send("appearance", newConfig);
         });
     };
