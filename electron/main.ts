@@ -2,6 +2,7 @@ import path from "path";
 import isDev from "electron-is-dev";
 import { app, BrowserWindow, ipcMain } from "electron";
 
+import AppAppearance from "./appearance";
 import IO from "./io/io";
 
 function createWindow() {
@@ -15,14 +16,14 @@ function createWindow() {
             preload: path.join(__dirname, "preload.js"),
         },
     });
-    if (isDev) {
-        win.loadURL("http://localhost:3000/index.html");
-    } else {
-        win.loadURL(`file://${__dirname}/../index.html`);
-    }
 
-    // Hot Reloading
+    AppAppearance.init(win.webContents, ipcMain);
+
     if (isDev) {
+        // load dev server
+        win.loadURL("http://localhost:3000/index.html");
+
+        // hot reloading
         require("electron-reload")(__dirname, {
             electron: path.join(
                 __dirname,
@@ -35,6 +36,13 @@ function createWindow() {
             forceHardReset: true,
             hardResetMethod: "exit",
         });
+
+        //open dev tools
+        win.webContents.openDevTools({
+            mode: "detach",
+        });
+    } else {
+        win.loadURL(`file://${__dirname}/../index.html`);
     }
 
     win.setPosition(0, 0);
@@ -46,6 +54,7 @@ app.whenReady().then(createWindow);
 
 app.on("window-all-closed", () => {
     if (process.platform !== "darwin") {
+        AppAppearance.stop();
         IO.close();
         app.quit();
     }

@@ -1,30 +1,36 @@
-import { Night } from "./appearance";
+import { IAppearanceConfig } from "./appearance";
 import { IOConfig, Compontents } from "./io/io";
 export interface Config {
-    appearance: Appearance;
+    appearance: IAppearanceConfig;
     io: IOConfig;
-}
-
-export interface Appearance {
-    iniFilePath: string;
-    watchForChanges: boolean;
-    watchingInterval: number;
-    fallbackValues: FallbackValues;
-}
-
-export interface FallbackValues {
-    colors: Night;
 }
 
 const config: Config = {
     appearance: {
-        iniFilePath: "/home/pi/.openauto/config/openauto_system.ini",
-        watchForChanges: true,
-        watchingInterval: 4000,
+        iniFilePath: "/home/dariusz/config.ini",
         fallbackValues: {
-            colors: {
+            day: {
                 WallpaperPath: "",
-                WallpaperMode: "1",
+                WallpaperMode: "0",
+                WallpaperOpacity: "100",
+                BackgroundColor: "#4b4b4b",
+                HighlightColor: "#1f85ff",
+                ControlBackground: "#e2e2e2",
+                ControlForeground: "#1f85ff",
+                NormalFontColor: "#000000",
+                SpecialFontColor: "#000000",
+                DescriptionFontColor: "#202020",
+                BarBackgroundColor: "#b2b2b2",
+                ControlBoxBackgroundColor: "#808080",
+                GaugeIndicatorColor: "#f5b42a",
+                IconShadowColor: "#60000000",
+                IconColor: "#000000",
+                SideWidgetBackgroundColor: "#b2b2b2",
+                BarShadowColor: "#333333",
+            },
+            night: {
+                WallpaperPath: "",
+                WallpaperMode: "0",
                 WallpaperOpacity: "100",
                 BackgroundColor: "#4b4b4b",
                 HighlightColor: "#f5b42a",
@@ -34,13 +40,14 @@ const config: Config = {
                 SpecialFontColor: "#f5b42a",
                 DescriptionFontColor: "#888888",
                 BarBackgroundColor: "#000000",
-                ControlBoxBackgroundColor: "#303030",
+                ControlBoxBackgroundColor: "#181818",
                 GaugeIndicatorColor: "#f5b42a",
                 IconShadowColor: "#80000000",
                 IconColor: "#ffffff",
                 SideWidgetBackgroundColor: "#000000",
                 BarShadowColor: "#333333",
             },
+            opacity: 0.25,
         },
     },
 
@@ -76,7 +83,7 @@ const config: Config = {
                 gpioNumber: 26,
                 activeLow: false,
                 feedbackGpioNumber: 21,
-                scheduleTime: 500
+                scheduleTime: 500,
             },
             {
                 type: "ds18b20",

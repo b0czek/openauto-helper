@@ -10,17 +10,17 @@ $target-gradient: rgb(
     font-family: Arial, Helvetica, sans-serif;
     color: white;
     background: rgb(75, 75, 75);
-    background: linear-gradient(
-        0deg,
-        $target-gradient 0%,
-        rgb(
-                $container-background-color-r,
-                $container-background-color-g,
-                $container-background-color-b
-            )
-            50%,
-        $target-gradient 100%
-    );
+    // background: linear-gradient(
+    //     0deg,
+    //     $target-gradient 0%,
+    //     rgb(
+    //             $container-background-color-r,
+    //             $container-background-color-g,
+    //             $container-background-color-b
+    //         )
+    //         50%,
+    //     $target-gradient 100%
+    // );
 
     min-height: 100vh;
     width: 100%;

@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
+import AppAppearance from "./appearance";
 
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
@@ -11,3 +12,4 @@ contextBridge.exposeInMainWorld("api", {
         ipcRenderer.on(channel, (_, ...args) => func(...args));
     },
 });
+contextBridge.exposeInMainWorld("appearance", AppAppearance.readColorConfig());
