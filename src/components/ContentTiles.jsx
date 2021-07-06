@@ -1,27 +1,38 @@
 import React from "react";
+import styled from "styled-components";
 
-import Appearance, { createRGBAString } from "../appearance";
+import Appearance, {
+    parseHexColor,
+    getCurrentColors,
+    createRGBAString,
+} from "../appearance";
 import "./ContentTiles.scss";
 import "../index.scss";
 
 // generates black rgba color with given opacity
-const getBackground = (opacity) => createRGBAString([0, 0, 0, opacity]);
+const getBackground = (backgroundColor, opacity) => {
+    console.log(backgroundColor);
+    return createRGBAString([...parseHexColor(backgroundColor), opacity]);
+};
 
+const Tile = styled.div`
+    background-color: ${({ opacity, backgroundColor }) =>
+        getBackground(backgroundColor, opacity)};
+`;
 //#region RegularTile
 const ContentTile = React.forwardRef((props, ref) => {
     let appearance = Appearance.useContainer();
     return (
-        <div
+        <Tile
             className={mergeClasses(
                 `contentTile contentTileLong unselectable`,
                 props
             )}
-            style={{
-                backgroundColor: getBackground(appearance.opacity),
-            }}
+            backgroundColor={getCurrentColors(appearance).ControlBackground}
+            opacity={appearance.opacity}
             ref={ref}>
             {props.children}
-        </div>
+        </Tile>
     );
 });
 
@@ -43,17 +54,16 @@ const ContentTileText = (props) => (
 const ContentTileShort = React.forwardRef((props, ref) => {
     let appearance = Appearance.useContainer();
     return (
-        <div
+        <Tile
             className={mergeClasses(
                 "contentTile contentTileShort unselectable",
                 props
             )}
-            style={{
-                backgroundColor: getBackground(appearance.opacity),
-            }}
+            backgroundColor={getCurrentColors(appearance).ControlBackground}
+            opacity={appearance.opacity}
             ref={ref}>
             {props.children}
-        </div>
+        </Tile>
     );
 });
 const ShortTileText = (props) => (
