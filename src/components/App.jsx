@@ -1,24 +1,21 @@
 import React from "react";
+import styled from "styled-components";
 
 import TopBar from "./TopBar";
 import Content from "./Content";
 import BottomBar from "./BottomBar";
+import Appearance, {
+    createRGBString,
+    parseHexColor,
+    getCurrentColors,
+} from "../appearance";
+
 import "./App.scss";
-import Appearance from "../appearance";
 
 // #region appbackground
-const parseHexColor = (color) => {
-    color = color.slice(1); //drop the #
-    let result = [];
-    for (let i = 0; i < 6; i += 2) {
-        result.push(parseInt(color.slice(i, i + 2), 16));
-    }
-    return result;
-};
+
 const createGradientTarget = (colors) =>
     colors.map((color) => color / (4 + (0.25 * color) / 255));
-
-const createRGBString = (colors) => `rgb(${colors.join(",")})`;
 
 const createBackgroundGradient = (color) => {
     let backgroundColor = parseHexColor(color);
@@ -29,23 +26,23 @@ const createBackgroundGradient = (color) => {
         ${createRGBString(backgroundColor)} 50%,
         ${createRGBString(targetGradientColors)} 100%)`;
 };
+
+const Background = styled.div`
+    background: ${({ color }) => createBackgroundGradient(color)};
+`;
+
 // #endregion appbackground
 
 const App = () => {
     let appearance = Appearance.useContainer();
-    console.log(`???? rerender???`);
     return (
-        <div
+        <Background
             className="container"
-            style={{
-                background: createBackgroundGradient(
-                    appearance.night.BackgroundColor
-                ),
-            }}>
+            color={getCurrentColors(appearance).BackgroundColor}>
             <TopBar />
             <Content />
             <BottomBar />
-        </div>
+        </Background>
     );
 };
 

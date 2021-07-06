@@ -1,17 +1,29 @@
+import React from "react";
+
+import Appearance, { createRGBAString } from "../appearance";
 import "./ContentTiles.scss";
 import "../index.scss";
-import React from "react";
+
+// generates black rgba color with given opacity
+const getBackground = (opacity) => createRGBAString([0, 0, 0, opacity]);
+
 //#region RegularTile
-const ContentTile = React.forwardRef((props, ref) => (
-    <div
-        className={mergeClasses(
-            `contentTile contentTileLong unselectable`,
-            props
-        )}
-        ref={ref}>
-        {props.children}
-    </div>
-));
+const ContentTile = React.forwardRef((props, ref) => {
+    let appearance = Appearance.useContainer();
+    return (
+        <div
+            className={mergeClasses(
+                `contentTile contentTileLong unselectable`,
+                props
+            )}
+            style={{
+                backgroundColor: getBackground(appearance.opacity),
+            }}
+            ref={ref}>
+            {props.children}
+        </div>
+    );
+});
 
 const ContentTileContent = (props) => (
     <div className={mergeClasses("contentTileContent centerChildren", props)}>
@@ -28,16 +40,22 @@ const ContentTileText = (props) => (
 //#endregion RegularTile
 
 //#region ShortTile
-const ContentTileShort = React.forwardRef((props, ref) => (
-    <div
-        className={mergeClasses(
-            "contentTile contentTileShort unselectable",
-            props
-        )}
-        ref={ref}>
-        {props.children}
-    </div>
-));
+const ContentTileShort = React.forwardRef((props, ref) => {
+    let appearance = Appearance.useContainer();
+    return (
+        <div
+            className={mergeClasses(
+                "contentTile contentTileShort unselectable",
+                props
+            )}
+            style={{
+                backgroundColor: getBackground(appearance.opacity),
+            }}
+            ref={ref}>
+            {props.children}
+        </div>
+    );
+});
 const ShortTileText = (props) => (
     <div className={mergeClasses("contentTileShortText", props)}>
         {props.children}

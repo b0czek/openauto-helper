@@ -1,7 +1,9 @@
+import React from "react";
+import styled from "styled-components";
+
+import ApiFetchComponent from "./ApiFetchComponent";
 import fogLightsIcon from "../imgs/foglights.png";
 import "./FogLightsSwitch.scss";
-import React from "react";
-import ApiFetchComponent from "./ApiFetchComponent";
 class FogLightsSwitch extends ApiFetchComponent {
     render() {
         return (
