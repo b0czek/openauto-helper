@@ -9,7 +9,7 @@ import Appearance, {
 import "./ContentTiles.scss";
 import "../index.scss";
 
-// generates black rgba color with given opacity
+// generates rgba color with given opacity
 const getBackground = (backgroundColor, opacity) => {
     console.log(backgroundColor);
     return createRGBAString([...parseHexColor(backgroundColor), opacity]);
