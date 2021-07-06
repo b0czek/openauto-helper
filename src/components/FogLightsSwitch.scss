@@ -20,26 +20,6 @@
 
 .fogLightsSwitched {
     border: $foglights-outline-thickness solid;
-    border-color: $foglights-outline-color;
     border-radius: 50%;
-    animation-name: fogLightsPulse;
     animation-duration: $fogligths-animation-duration;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
-}
-
-@keyframes fogLightsPulse {
-    0%,
-    50% {
-        border-color: $foglights-outline-color;
-    }
-
-    100% {
-        border-color: $foglights-animation-pulse-target;
-    }
-}
-
-.topBar {
-    display: flex;
-    align-items: center;
 }
