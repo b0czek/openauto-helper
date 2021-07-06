@@ -8,9 +8,12 @@ import cfg from "./config";
 const config = cfg.appearance;
 
 export interface IAppearance {
+    colors: IColors;
+    opacity: number;
+}
+export interface IColors {
     day: Colors;
     night: Colors;
-    opacity: number;
 }
 
 export interface IAppearanceConfig {
@@ -32,10 +35,14 @@ export default class AppAppearance {
             );
             return config.fallbackValues;
         }
-
+        if (lodash.isEmpty(result)) {
+            throw new Error("Read config was empty");
+        }
         return {
-            day: result.Day,
-            night: result.Night,
+            colors: {
+                day: result.Day,
+                night: result.Night,
+            },
             opacity: parseInt(result.Appearance.ControlsOpacity) / 100,
         };
     }
@@ -53,8 +60,14 @@ export default class AppAppearance {
             },
             (event, _filename) => {
                 if (event == "change") {
-                    let newConfig: IAppearance =
-                        AppAppearance.readColorConfig();
+                    let newConfig: IAppearance;
+                    // sometimes autoapp writes empty file before saving
+                    try {
+                        newConfig = AppAppearance.readColorConfig();
+                    } catch (e) {
+                        console.error(e.toString());
+                        return;
+                    }
 
                     if (!lodash.isEqual(newConfig, AppAppearance.colorConfig)) {
                         console.log(`Detected AutoApp's config change.`);
