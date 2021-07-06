@@ -20,7 +20,9 @@ export const getCurrentColors = (appearance) => appearance.colors[appearance.day
 
 
 const AppearanceState = (initialState = window.appearance) => {
-    let [appearance, setAppearance] = React.useState(initialState);
+    let [appearance, setAppearance] = React.useReducer(
+        (state, newValue) => ({ ...state, ...newValue }),
+        initialState);
 
     React.useEffect(() => {
         window.api.receive("appearance", (config) => {
@@ -40,5 +42,18 @@ const AppearanceState = (initialState = window.appearance) => {
 };
 
 let Appearance = createContainer(AppearanceState);
+
+// for class components
+export const subscribeAsProp = (ClassComponent) =>
+    (props) => {
+        let container = Appearance.useContainer();
+        return (
+            <ClassComponent
+                {...props}
+                appearance={container}
+            />
+        );
+    }
+
 
 export default Appearance;
