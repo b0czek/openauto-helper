@@ -3,5 +3,6 @@
 .topBar {
     height: $top-bar-height;
     width: 100%;
-    background-color: black;
+    display: flex;
+    align-items: center;
 }

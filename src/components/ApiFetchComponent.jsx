@@ -16,12 +16,12 @@ class ApiFetchComponent extends React.Component {
     }
 
     initializeApi() {
-        window.api.receive(this.props.ioName, (err, wroteState) => {
+        window.api.receive(this.props.ioName, (err, apiState) => {
             if (err) {
                 this.handleApiError(err);
             } else {
                 this.setState({
-                    apiState: wroteState,
+                    apiState,
                 });
             }
         });

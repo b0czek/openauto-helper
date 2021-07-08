@@ -1,17 +1,39 @@
+import React from "react";
+import styled from "styled-components";
+
+import Appearance, {
+    parseHexColor,
+    getCurrentColors,
+    createRGBAString,
+} from "../appearance";
 import "./ContentTiles.scss";
 import "../index.scss";
-import React from "react";
+
+// generates rgba color with given opacity
+const getBackground = (backgroundColor, opacity) => {
+    return createRGBAString([...parseHexColor(backgroundColor), opacity]);
+};
+
+const Tile = styled.div`
+    background-color: ${({ opacity, backgroundColor }) =>
+        getBackground(backgroundColor, opacity)};
+`;
 //#region RegularTile
-const ContentTile = React.forwardRef((props, ref) => (
-    <div
-        className={mergeClasses(
-            `contentTile contentTileLong unselectable`,
-            props
-        )}
-        ref={ref}>
-        {props.children}
-    </div>
-));
+const ContentTile = React.forwardRef((props, ref) => {
+    let appearance = Appearance.useContainer();
+    return (
+        <Tile
+            className={mergeClasses(
+                `contentTile contentTileLong unselectable`,
+                props
+            )}
+            backgroundColor={getCurrentColors(appearance).ControlBackground}
+            opacity={appearance.opacity}
+            ref={ref}>
+            {props.children}
+        </Tile>
+    );
+});
 
 const ContentTileContent = (props) => (
     <div className={mergeClasses("contentTileContent centerChildren", props)}>
@@ -28,16 +50,21 @@ const ContentTileText = (props) => (
 //#endregion RegularTile
 
 //#region ShortTile
-const ContentTileShort = React.forwardRef((props, ref) => (
-    <div
-        className={mergeClasses(
-            "contentTile contentTileShort unselectable",
-            props
-        )}
-        ref={ref}>
-        {props.children}
-    </div>
-));
+const ContentTileShort = React.forwardRef((props, ref) => {
+    let appearance = Appearance.useContainer();
+    return (
+        <Tile
+            className={mergeClasses(
+                "contentTile contentTileShort unselectable",
+                props
+            )}
+            backgroundColor={getCurrentColors(appearance).ControlBackground}
+            opacity={appearance.opacity}
+            ref={ref}>
+            {props.children}
+        </Tile>
+    );
+});
 const ShortTileText = (props) => (
     <div className={mergeClasses("contentTileShortText", props)}>
         {props.children}

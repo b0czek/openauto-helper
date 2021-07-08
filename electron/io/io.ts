@@ -17,7 +17,11 @@ export interface RendererIO {
 }
 
 export type Compontents = "onoff" | "adcChannel" | "ds18b20" | "gpioBuffer";
-export type Channel = OnOffConfig | AdcChannelConfig | DS18B20Config | GPIOBufferConfig;
+export type Channel =
+    | OnOffConfig
+    | AdcChannelConfig
+    | DS18B20Config
+    | GPIOBufferConfig;
 
 export interface IOConfig {
     mcp3424: MCP3424Options;
@@ -41,7 +45,11 @@ export default class IO {
                     object = new OnOff(<OnOffConfig>channel, IO.ios);
                     break;
                 case "adcChannel":
-                    object = new AdcChannel(<AdcChannelConfig>channel, IO.ios, IO.adc);
+                    object = new AdcChannel(
+                        <AdcChannelConfig>channel,
+                        IO.ios,
+                        IO.adc
+                    );
                     break;
                 case "ds18b20":
                     object = new DS18B20(<DS18B20Config>channel, IO.ios);

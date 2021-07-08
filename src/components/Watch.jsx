@@ -6,17 +6,25 @@ class Watch extends React.Component {
         time: "00:00",
         date: "00 / 00 / 0000",
     };
+    updateTimeout = null;
 
     updateWatch = () => {
-        this.setState({
-            time: getTimeString(),
-            date: getDateString(),
-        });
-        setTimeout(this.updateWatch, 1000);
+        let currTime = getTimeString();
+        let currDate = getDateString();
+        if (currTime !== this.state.time || currDate !== this.state.date) {
+            this.setState({
+                time: currTime,
+                date: currDate,
+            });
+        }
+        this.updateTimeout = setTimeout(this.updateWatch, 1000);
     };
 
     componentDidMount() {
         this.updateWatch();
+    }
+    componentWillUnmount() {
+        clearTimeout(this.updateTimeout);
     }
     render() {
         return (
