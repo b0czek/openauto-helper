@@ -9,10 +9,14 @@ class Watch extends React.Component {
     updateTimeout = null;
 
     updateWatch = () => {
-        this.setState({
-            time: getTimeString(),
-            date: getDateString(),
-        });
+        let currTime = getTimeString();
+        let currDate = getDateString();
+        if (currTime !== this.state.time || currDate !== this.state.date) {
+            this.setState({
+                time: currTime,
+                date: currDate,
+            });
+        }
         this.updateTimeout = setTimeout(this.updateWatch, 1000);
     };
 

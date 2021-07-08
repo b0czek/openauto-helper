@@ -5,7 +5,7 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import AppAppearance from "./appearance";
 import IO from "./io/io";
 
-function createWindow() {
+const createWindow = async () => {
     const win = new BrowserWindow({
         width: 450,
         height: 1600,
@@ -49,7 +49,7 @@ function createWindow() {
     win.setFullScreen(true);
 
     IO.init(win.webContents, ipcMain);
-}
+};
 app.whenReady().then(createWindow);
 
 app.on("window-all-closed", () => {
