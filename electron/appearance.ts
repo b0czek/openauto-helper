@@ -51,6 +51,10 @@ export default class AppAppearance {
         callback: (newConfig: IAppearance) => void
     ) {
         AppAppearance.colorConfig = AppAppearance.readColorConfig();
+
+        if (!fs.existsSync(config.iniFilePath)) {
+            return;
+        }
         AppAppearance.watcher = fs.watch(
             config.iniFilePath,
             {
