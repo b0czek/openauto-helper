@@ -25,9 +25,12 @@ The app is always monitoring OpenAuto's config file and uppon change, it is upda
 ## Building
 
 To build the app, you'll need **nodejs** (version 10.24.0 works alright), **yarn** (or npm) and about 1GB for node_modules(smh).
-git clone https://github.com/b0czek/openauto-helper # clone the repository
-cd openauto-helper
-yarn # install dependencies
-yarn build # build executable
+
+    git clone https://github.com/b0czek/openauto-helper # clone the repository
+    cd openauto-helper
+
+    yarn # install dependencies
+    yarn build # build executable
+
 After that in dist directory, there should be `openauto-helper.AppImage` executable.
 If you want the app to start automatically, add it's path at the begging of `/etc/xdg/lxsession/LXDE-pi/autostart` file.
