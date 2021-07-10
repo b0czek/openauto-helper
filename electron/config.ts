@@ -102,6 +102,14 @@ const config: Config = {
                 activeLow: false,
                 bufferInterval: 4000,
             },
+            {
+                type: "lightsensor",
+                name: "lightSensor",
+                address: 0x39,
+                busNumber: 1,
+                readingInterval: 1000,
+                changeInsensitivity: 20,
+            },
         ],
     },
 };
