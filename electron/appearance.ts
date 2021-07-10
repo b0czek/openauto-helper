@@ -23,7 +23,7 @@ export interface IAppearanceConfig {
 
 export default class AppAppearance {
     public static colorConfig: IAppearance = config.fallbackValues;
-    private static watcher: fs.FSWatcher;
+    private static watcher: fs.FSWatcher | null = null;
 
     public static readColorConfig(): IAppearance {
         let result: OpenAutoConfig;
@@ -94,7 +94,7 @@ export default class AppAppearance {
     };
 
     public static stop = () => {
-        AppAppearance.watcher.close();
+        if (AppAppearance.watcher) AppAppearance.watcher.close();
     };
 }
 
