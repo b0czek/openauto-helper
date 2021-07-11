@@ -1,4 +1,42 @@
 import React from "react";
+import styled from "styled-components";
+import { subscribeAsProp, getCurrentColors } from "../appearance";
+
+const getSliderGradient = ({ progressColor, value, max }) => {
+    let progressWidth = `${(value / max) * 100}%`;
+    return `
+    linear-gradient(
+        to right,
+        ${progressColor} 0%,
+        ${progressColor} ${progressWidth},
+        #fff ${progressWidth},
+        #fff 100%
+    )`;
+};
+
+const Slider = styled.input`
+    background: ${(props) => getSliderGradient(props)};
+    border-radius: 8px;
+    height: 4px;
+    outline: none;
+    transition: background 450ms ease-in;
+
+    -webkit-appearance: none;
+
+    &:focus {
+        outline: none;
+    }
+
+    &::-webkit-slider-thumb {
+        background-color: ${({ progressColor }) => progressColor};
+        border-radius: 0;
+
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        -webkit-appearance: none;
+    }
+`;
 
 class SliderDisplay extends React.Component {
     state = {
@@ -28,54 +66,25 @@ class SliderDisplay extends React.Component {
 
     componentDidUpdate() {
         // update speed is just Hz
-        let updateTimeout = 1 / this.props.updateSpeed;
-        this.updateValue.bind(this)([updateTimeout, this.props.value]);
+        // let updateTimeout = 1 / this.props.updateSpeed;
+        // this.updateValue.bind(this)([updateTimeout, this.props.value]);
     }
 
     render() {
         return (
-            <input
+            <Slider
                 type="range"
                 readOnly={true}
                 min={this.props.min ?? 0}
                 max={this.props.max ?? 100}
-                value={this.state.displayedValue}
-                className={this.props.className}
+                value={this.props.value}
                 style={this.props.style}
+                progressColor={
+                    getCurrentColors(this.props.appearance).ControlForeground
+                }
             />
         );
     }
 }
 
-// const SliderDisplay = (props) => {
-//     const [displayedValue, setDisplayValue] = React.useState(props.value);
-//     const [currentUpdateJob, setCurrentUpdateJob] = React.useState(null);
-//     const updateValue = async (params) => {
-//         console.log(`params = ${params}`);
-//         let [updateTimeout, updateTarget] = params;
-//         if (displayedValue === updateTarget) {
-//             return;
-//         }
-//         let newValue =
-//             displayedValue - (updateTarget < displayedValue ? 1 : -1);
-//         console.log(
-//             `changing value ${displayedValue} to ${newValue}, target is ${updateTarget}`
-//         );
-//         setDisplayValue(newValue);
-
-//         setTimeout(updateValue, updateTimeout, [updateTimeout, updateTarget]);
-//     };
-//     React.useEffect(() => {
-//         clearTimeout(currentUpdateJob);
-//         console.log(`value changed to ${props.value}`);
-//         // update speed is just Hz
-//         let updateTimeout = 1 / props.updateSpeed;
-//         let updateJob = updateValue([updateTimeout, props.value]);
-//         setCurrentUpdateJob(updateJob);
-//     }, [props.value]);
-
-//     return (
-
-//     );
-// };
-export default SliderDisplay;
+export default subscribeAsProp(SliderDisplay);
