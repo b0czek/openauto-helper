@@ -7,21 +7,27 @@ import AdcChannel, { AdcChannelConfig } from "./adcchannel";
 import OnOff, { OnOffConfig } from "./onoff";
 import DS18B20, { DS18B20Config } from "./ds18b20";
 import GPIOBuffer, { GPIOBufferConfig } from "./gpiobuffer";
+import LightSensor, { LightSensorConfig } from "./lightsensor";
 
 const config = cfg.io;
 
-// bad design borrowing those to suncompontents but it reduces unneeded code
 export interface RendererIO {
     webContents: WebContents;
     ipcMain: IpcMain;
 }
 
-export type Compontents = "onoff" | "adcChannel" | "ds18b20" | "gpioBuffer";
+export type Compontents =
+    | "onoff"
+    | "adcChannel"
+    | "ds18b20"
+    | "gpioBuffer"
+    | "lightsensor";
 export type Channel =
     | OnOffConfig
     | AdcChannelConfig
     | DS18B20Config
-    | GPIOBufferConfig;
+    | GPIOBufferConfig
+    | LightSensorConfig;
 
 export interface IOConfig {
     mcp3424: MCP3424Options;
@@ -57,6 +63,12 @@ export default class IO {
                 case "gpioBuffer":
                     object = new GPIOBuffer(<GPIOBufferConfig>channel, IO.ios);
                     break;
+                case "lightsensor":
+                    object = new LightSensor(
+                        <LightSensorConfig>channel,
+                        IO.ios
+                    );
+                    break;
                 default:
                     throw new Error("Invalid channel configuration");
             }
@@ -68,6 +80,7 @@ export default class IO {
             console.log(`closing ${channel.name}`);
             channel.close();
         }
+        console.log("closing adc");
         IO.adc.close();
     };
 }

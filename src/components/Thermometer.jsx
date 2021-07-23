@@ -2,6 +2,7 @@ import ApiFetchComponent from "./ApiFetchComponent";
 import { ShortTile } from "./ContentTiles";
 import thermometerIcon from "../imgs/thermometer.png";
 import "./Thermometer.scss";
+import "./ContentTiles.scss";
 class TemperatureTile extends ApiFetchComponent {
     render() {
         return (
@@ -15,7 +16,7 @@ class TemperatureTile extends ApiFetchComponent {
                     <img
                         src={this.props.iconPath}
                         alt="icon"
-                        className="icon"
+                        className="shortTileIcon"
                     />
                 </ShortTile.Text>
                 <ShortTile.Content>

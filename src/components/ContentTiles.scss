@@ -30,13 +30,18 @@
     display: flex;
     font-size: $content-tile-short-font-size;
     .contentTileShortText {
-        width: 100% - $content-tile-short-content-width;
         display: flex;
         align-items: center;
         margin-left: 40px;
     }
     .contentTileShortContent {
-        width: $content-tile-short-content-width;
+        justify-content: flex-end;
+        padding: 0 20px;
+        flex: 1;
         height: 100%;
     }
+}
+.shortTileIcon {
+    height: $content-tile-short-font-size;
+    filter: invert(100%);
 }
