@@ -61,7 +61,7 @@ const config: Config = {
             busNumber: 1,
             // interval specifies interval for reading one channel
             readingInterval: 100,
-            changeInsensitivity: 10,
+            changeInsensitivity: 50,
         },
         channels: [
             {

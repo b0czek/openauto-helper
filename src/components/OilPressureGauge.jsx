@@ -30,15 +30,15 @@ class OilPressureGauge extends ApiFetchComponent {
             generateGradient: true,
             highDpiSupport: true, // High resolution support
             staticZones: [
-                { strokeStyle: "#F03E3E", min: 0.0, max: 1 }, // Red
-                { strokeStyle: "#FFDD00", min: 0.5, max: 1.5 }, // Yellow
-                { strokeStyle: "#30B32D", min: 1.5, max: 4.0 }, // Green
-                { strokeStyle: "#FFDD00", min: 3.5, max: 4.5 }, // Yellow
+                { strokeStyle: "#F03E3E", min: 0.0, max: 0.5 }, // Red
+                { strokeStyle: "#FFDD00", min: 0.5, max: 1.0 }, // Yellow
+                { strokeStyle: "#30B32D", min: 1.0, max: 4.0 }, // Green
+                { strokeStyle: "#FFDD00", min: 4.0, max: 4.5 }, // Yellow
                 { strokeStyle: "#F03E3E", min: 4.5, max: 5 }, // Red
             ],
             staticLabels: {
-                font: "18px sans-serif", // Specifies font
-                labels: [0.0, 0.5, 1.5, 3.5, 4.5, 5.0], // Print labels at these values
+                font: "20px sans-serif", // Specifies font
+                labels: [0.0, 1.0, 2.0, 3.0, 4.0, 5.0], // Print labels at these values
                 color: "#ffffff", // Optional: Label text color
                 fractionDigits: 0, // Optional: Numerical precision. 0=round off.
             },

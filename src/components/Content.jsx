@@ -9,7 +9,7 @@ const Content = () => (
         <OilPressureGauge ioName="oilpressure.0" />
         <Watch />
         <LightSensor ioName="lightSensor" />
-        <Thermometer ioName="ds18b20.0" iconPath={vanIcon} />
+        <Thermometer ioName="thermometer.0" iconPath={vanIcon} />
     </div>
 );
 export default Content;
