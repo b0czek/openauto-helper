@@ -1,37 +1,6 @@
 import React from "react";
 
 class SliderDisplay extends React.Component {
-    state = {
-        currentUpdateJob: null,
-        displayedValue: this.props.value,
-    };
-    updateValue = (params) => {
-        let [updateTimeout, updateTarget] = params;
-        if (updateTarget === this.state.displayedValue) {
-            return;
-        }
-        let newValue =
-            this.state.displayedValue -
-            (updateTarget < this.state.displayedValue ? 1 : -1);
-        this.setState(
-            {
-                displayedValue: newValue,
-            },
-            () => {
-                setTimeout(this.updateValue.bind(this), updateTimeout, [
-                    updateTimeout,
-                    updateTarget,
-                ]);
-            }
-        );
-    };
-
-    componentDidUpdate() {
-        // update speed is just Hz
-        let updateTimeout = 1 / this.props.updateSpeed;
-        this.updateValue.bind(this)([updateTimeout, this.props.value]);
-    }
-
     render() {
         return (
             <input
@@ -39,7 +8,7 @@ class SliderDisplay extends React.Component {
                 readOnly={true}
                 min={this.props.min ?? 0}
                 max={this.props.max ?? 100}
-                value={this.state.displayedValue}
+                value={this.props.value}
                 className={this.props.className}
                 style={this.props.style}
             />

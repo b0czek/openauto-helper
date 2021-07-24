@@ -21,7 +21,9 @@ class TemperatureTile extends ApiFetchComponent {
                 </ShortTile.Text>
                 <ShortTile.Content>
                     <div className="temperatureValue">
-                        {this.state.apiState ?? "--"}
+                        {this.state.apiState
+                            ? this.state.apiState.toFixed(1)
+                            : "--"}
                     </div>
                 </ShortTile.Content>
             </ShortTile>
