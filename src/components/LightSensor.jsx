@@ -13,7 +13,7 @@ class LightSensor extends ApiFetchComponent {
                 <ShortTile.Content>
                     <SliderDisplay
                         style={{ width: "100%" }}
-                        max={10000}
+                        max={400}
                         value={this.state.apiState ?? 0}
                         updateSpeed={100}
                     />
