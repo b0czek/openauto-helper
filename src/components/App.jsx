@@ -28,7 +28,9 @@ const createBackgroundGradient = (color) => {
 };
 
 const Background = styled.div`
-    background: ${({ color }) => createBackgroundGradient(color)};
+    &:before {
+        background: ${({ color }) => createBackgroundGradient(color)};
+    }
 `;
 
 // #endregion appbackground
