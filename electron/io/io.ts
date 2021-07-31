@@ -8,6 +8,7 @@ import OnOff, { OnOffConfig } from "./onoff";
 import DS18B20, { DS18B20Config } from "./ds18b20";
 import GPIOBuffer, { GPIOBufferConfig } from "./gpiobuffer";
 import LightSensor, { LightSensorConfig } from "./lightsensor";
+import ModemSignal, { ModemSignalConfig } from "./modemsignal";
 
 const config = cfg.io;
 
@@ -21,13 +22,15 @@ export type Compontents =
     | "adcChannel"
     | "ds18b20"
     | "gpioBuffer"
-    | "lightsensor";
+    | "lightsensor"
+    | "modemsignal";
 export type Channel =
     | OnOffConfig
     | AdcChannelConfig
     | DS18B20Config
     | GPIOBufferConfig
-    | LightSensorConfig;
+    | LightSensorConfig
+    | ModemSignalConfig;
 
 export interface IOConfig {
     mcp3424: MCP3424Options;
@@ -46,32 +49,49 @@ export default class IO {
         IO.adc = new MCP3424(config.mcp3424);
         for (let channel of config.channels) {
             let object: IOComponent;
-            switch (channel.type) {
-                case "onoff":
-                    object = new OnOff(<OnOffConfig>channel, IO.ios);
-                    break;
-                case "adcChannel":
-                    object = new AdcChannel(
-                        <AdcChannelConfig>channel,
-                        IO.ios,
-                        IO.adc
-                    );
-                    break;
-                case "ds18b20":
-                    object = new DS18B20(<DS18B20Config>channel, IO.ios);
-                    break;
-                case "gpioBuffer":
-                    object = new GPIOBuffer(<GPIOBufferConfig>channel, IO.ios);
-                    break;
-                case "lightsensor":
-                    object = new LightSensor(
-                        <LightSensorConfig>channel,
-                        IO.ios
-                    );
-                    break;
-                default:
-                    throw new Error("Invalid channel configuration");
+            try {
+                switch (channel.type) {
+                    case "onoff":
+                        object = new OnOff(<OnOffConfig>channel, IO.ios);
+                        break;
+                    case "adcChannel":
+                        object = new AdcChannel(
+                            <AdcChannelConfig>channel,
+                            IO.ios,
+                            IO.adc
+                        );
+                        break;
+                    case "ds18b20":
+                        object = new DS18B20(<DS18B20Config>channel, IO.ios);
+                        break;
+                    case "gpioBuffer":
+                        object = new GPIOBuffer(
+                            <GPIOBufferConfig>channel,
+                            IO.ios
+                        );
+                        break;
+                    case "lightsensor":
+                        object = new LightSensor(
+                            <LightSensorConfig>channel,
+                            IO.ios
+                        );
+                        break;
+                    case "modemsignal":
+                        object = new ModemSignal(
+                            <ModemSignalConfig>channel,
+                            IO.ios
+                        );
+                        break;
+                    default:
+                        throw new Error(
+                            "Invalid channel configuration - unknown IO type."
+                        );
+                }
+            } catch (err) {
+                console.log(err.toString());
+                continue;
             }
+
             IO.channels.push(object);
         }
     };

@@ -110,6 +110,14 @@ const config: Config = {
                 readingInterval: 1000,
                 changeInsensitivity: 20,
             },
+            {
+                type: "modemsignal",
+                name: "modemSignal",
+                routerIp: "192.168.8.1",
+                username: "admin",
+                password: "69106118",
+                readingInterval: 2000,
+            },
         ],
     },
 };
