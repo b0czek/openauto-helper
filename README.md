@@ -5,9 +5,9 @@ Simple app displayed on the same screen, adjacent to [OpenAuto Pro](https://blue
 
 ## How it's done
 
-For splitting one screen for two fullscreen apps, I'm using [fakexrandr](https://github.com/phillipberndt/fakexrandr) library that creates virtual displays. It's not working perfectly but it suffices (it's pretty old and quite a hassle to install on the pi). Also I have tweaked few openbox settings for proper app placement.
+For splitting one screen for two fullscreen apps, I'm using xrandr's native `--setmonitor` option. Also I have tweaked few openbox settings for proper app placement.
 The layout of the UI was adjusted by pixels to match the OpenAuto's look (it's not pixel perfect but I'm fine with it).
-**The default settings are targeted for 2560x1600px display and 452px side bar width.**
+**The default settings are targeted for 2560x1600px display and 450px side bar width.**
 
 ## Configuration
 
