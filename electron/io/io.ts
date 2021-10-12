@@ -17,13 +17,18 @@ export interface RendererIO {
     ipcMain: IpcMain;
 }
 
-export type Compontents =
-    | "onoff"
-    | "adcChannel"
-    | "ds18b20"
-    | "gpioBuffer"
-    | "lightsensor"
-    | "filehandler";
+const ChannelTypes = {
+    onoff: OnOff,
+    adcChannel: AdcChannel,
+    ds18b20: DS18B20,
+    gpioBuffer: GPIOBuffer,
+    lightsensor: LightSensor,
+    filehandler: FileHandler,
+};
+
+export type Compontents = keyof typeof ChannelTypes;
+const Types: Record<Compontents, typeof IOComponent> = ChannelTypes;
+
 export type Channel =
     | OnOffConfig
     | AdcChannelConfig
@@ -39,7 +44,7 @@ export interface IOConfig {
 
 export default class IO {
     private static ios: RendererIO;
-    private static adc: MCP3424;
+    public static adc: MCP3424;
     private static channels: IOComponent[] = [];
     public static init = (webContents: WebContents, ipcMain: IpcMain) => {
         IO.ios = {
@@ -49,35 +54,18 @@ export default class IO {
         IO.adc = new MCP3424(config.mcp3424);
         for (let channel of config.channels) {
             try {
-                let object: IOComponent;
-                switch (channel.type) {
-                    case "onoff":
-                        object = new OnOff(<OnOffConfig>channel, IO.ios);
-                        break;
-                    case "adcChannel":
-                        object = new AdcChannel(<AdcChannelConfig>channel, IO.ios, IO.adc);
-                        break;
-                    case "ds18b20":
-                        object = new DS18B20(<DS18B20Config>channel, IO.ios);
-                        break;
-                    case "gpioBuffer":
-                        object = new GPIOBuffer(<GPIOBufferConfig>channel, IO.ios);
-                        break;
-                    case "lightsensor":
-                        object = new LightSensor(<LightSensorConfig>channel, IO.ios);
-                        break;
-                    case "filehandler":
-                        object = new FileHandler(<FileHandlerConfig>channel, IO.ios);
-                        break;
-                    default:
-                        throw new Error("Invalid channel configuration");
+                if (channel.type in Types) {
+                    let IOConstructor = Types[channel.type];
+                    IO.channels.push(new IOConstructor(channel, IO.ios));
+                } else {
+                    throw new Error("Invalid channel configuration");
                 }
-                IO.channels.push(object);
             } catch (err) {
                 console.error(`${channel.name} could not be initialized: ${err.toString()}`);
             }
         }
     };
+
     public static close = () => {
         for (let channel of IO.channels) {
             console.log(`closing ${channel.name}`);

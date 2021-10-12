@@ -14,7 +14,8 @@ export default class IOComponent implements IIOComponent {
     protected ios: RendererIO;
     public name: string;
     public type: Compontents;
-    constructor(opts: IOComponentConfig, ios: RendererIO) {
+    //              component config     io to frontend    any other auxilliary parameters
+    constructor(opts: IOComponentConfig, ios: RendererIO, ..._aux: any) {
         this.ios = ios;
         this.name = opts.name;
         this.type = opts.type;
