@@ -15,6 +15,10 @@ class ApiFetchComponent extends React.Component {
         window.api.send(this.props.ioName, command, ...props);
     }
 
+    handleApiInvoke(...data) {
+        return window.api.invoke(this.props.ioName, ...data);
+    }
+
     initializeApi() {
         window.api.receive(this.props.ioName, (err, apiState) => {
             if (err) {

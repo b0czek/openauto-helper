@@ -26,3 +26,20 @@ export default class IOComponent implements IIOComponent {
         console.log(`closing ${this.name}`);
     }
 }
+
+/**
+ * IOComponent extending class template
+
+import { RendererIO } from "./io";
+import IOComponent, { IOComponentConfig } from "./ioComponent";
+
+export interface ComponentConfig extends IOComponentConfig {}
+
+export default class Component extends IOComponent {
+    constructor(config: ComponentConfig, ios: RendererIO) {
+        super(config, ios);
+    }
+
+}
+
+ */

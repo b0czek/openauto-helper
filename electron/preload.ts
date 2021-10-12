@@ -11,5 +11,6 @@ contextBridge.exposeInMainWorld("api", {
         // Deliberately strip event as it includes `sender`
         ipcRenderer.on(channel, (_, ...args) => func(...args));
     },
+    invoke: (channel: string, ...data: any) => ipcRenderer.invoke(channel, ...data),
 });
 contextBridge.exposeInMainWorld("appearance", AppAppearance.readColorConfig());
