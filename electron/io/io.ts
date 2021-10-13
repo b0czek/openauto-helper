@@ -9,6 +9,7 @@ import DS18B20, { DS18B20Config } from "./ds18b20";
 import GPIOBuffer, { GPIOBufferConfig } from "./gpiobuffer";
 import LightSensor, { LightSensorConfig } from "./lightsensor";
 import FileHandler, { FileHandlerConfig } from "./fileHandler";
+import DayNight, { DayNightConfig } from "./daynight";
 
 const config = cfg.io;
 
@@ -16,7 +17,7 @@ export interface RendererIO {
     webContents: WebContents;
     ipcMain: IpcMain;
 }
-
+export type ChannelType = typeof IOComponent;
 const ChannelTypes = {
     onoff: OnOff,
     adcChannel: AdcChannel,
@@ -24,10 +25,11 @@ const ChannelTypes = {
     gpioBuffer: GPIOBuffer,
     lightsensor: LightSensor,
     filehandler: FileHandler,
+    daynight: DayNight,
 };
 
 export type Compontents = keyof typeof ChannelTypes;
-const Types: Record<Compontents, typeof IOComponent> = ChannelTypes;
+const Types: Record<Compontents, ChannelType> = ChannelTypes;
 
 export type Channel =
     | OnOffConfig
@@ -35,7 +37,8 @@ export type Channel =
     | DS18B20Config
     | GPIOBufferConfig
     | LightSensorConfig
-    | FileHandlerConfig;
+    | FileHandlerConfig
+    | DayNightConfig;
 
 export interface IOConfig {
     mcp3424: MCP3424Options;
@@ -56,7 +59,7 @@ export default class IO {
             try {
                 if (channel.type in Types) {
                     let IOConstructor = Types[channel.type];
-                    IO.channels.push(new IOConstructor(channel, IO.ios));
+                    IO.channels.push(new IOConstructor(channel, IO.ios, ...IO.appendDependencies(channel)));
                 } else {
                     throw new Error("Invalid channel configuration");
                 }
@@ -65,6 +68,15 @@ export default class IO {
             }
         }
     };
+    private static appendDependencies(channel: Channel): IOComponent[] {
+        if ("auxDependencies" in channel) {
+            let dependencies = channel["auxDependencies"];
+            // if dependency is a string, convert it into [string]
+            dependencies = Array.isArray(dependencies) ? dependencies : [dependencies];
+            return IO.channels.filter((c) => dependencies.includes(c.name));
+        }
+        return [];
+    }
 
     public static close = () => {
         for (let channel of IO.channels) {

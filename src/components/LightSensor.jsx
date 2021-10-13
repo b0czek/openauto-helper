@@ -1,14 +1,21 @@
+import { subscribeAsProp } from "../appearance";
+
 import ApiFetchComponent from "./ApiFetchComponent";
 import { ShortTile } from "./ContentTiles";
 import SliderDisplay from "./SliderDisplay";
 import sunIcon from "../imgs/sun.png";
+import moonIcon from "../imgs/moon.png";
 import "./ContentTiles.scss";
 class LightSensor extends ApiFetchComponent {
     render() {
         return (
             <ShortTile>
                 <ShortTile.Text>
-                    <img src={sunIcon} alt="sun" className="shortTileIcon" />
+                    <img
+                        src={this.props.appearance.daynight === "night" ? moonIcon : sunIcon}
+                        alt="sun"
+                        className="shortTileIcon"
+                    />
                 </ShortTile.Text>
                 <ShortTile.Content>
                     <SliderDisplay
@@ -23,4 +30,4 @@ class LightSensor extends ApiFetchComponent {
     }
 }
 
-export default LightSensor;
+export default subscribeAsProp(LightSensor);

@@ -30,7 +30,8 @@ const AppearanceState = (initialState = window.appearance) => {
         });
         window.api.send("appearance");
 
-        window.api.receive("daynight", (state) => {
+        window.api.receive("daynight", (err, state) => {
+            if (err) return;
             setAppearance({
                 daynight: state
             });
