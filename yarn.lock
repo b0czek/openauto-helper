@@ -2411,10 +2411,10 @@ acorn@^8.1.0:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.2.1.tgz#0d36af126fb6755095879c1dc6fd7edf7d60a5fb"
   integrity sha512-z716cpm5TX4uzOzILx8PavOE6C6DKshHDw1aQN52M/yNSqE9s5O8SMfyhCCfCJ3HmTL0NkVOi+8a/55T7YB3bg==
 
-ada-tsl2561-ts@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/ada-tsl2561-ts/-/ada-tsl2561-ts-1.0.0.tgz#13541203c399fbb5a609112ca1e75fe438d7dfeb"
-  integrity sha512-IulIgq+8asbp62sqHMHWq06zI2CwOT8kUJKIet+4EZzvfl3rtLBNs34l/zKm0YCxwWN7ILuqoJGQT/rBU/uaaw==
+ada-tsl2561-ts@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/ada-tsl2561-ts/-/ada-tsl2561-ts-1.0.1.tgz#39c29bf4504b509a296e1d4dcc513ab48e851fd0"
+  integrity sha512-51eD5S179F0GJV7Re1AzKteLVBibhAADEizOvYzduf5M1izyq8dGjR7zjMpgUkYNSyaw6Mcgk+oR9cXlm1MLXg==
   dependencies:
     i2c-bus "^4.0.1"
 

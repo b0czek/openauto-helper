@@ -21,7 +21,7 @@
     "homepage": ".",
     "license": "ISC",
     "dependencies": {
-        "ada-tsl2561-ts": "^1.0.0",
+        "ada-tsl2561-ts": "^1.0.1",
         "ds18b20-raspi-typescript": "^0.4.0",
         "electron-is-dev": "^2.0.0",
         "electron-reload": "^1.5.0",
