@@ -135,10 +135,13 @@ export default class DayNight extends IOComponent {
             (avg > this.config.threshold + this.deadZone && this.state == DayNightState.Night) ||
             (avg < this.config.threshold - this.deadZone && this.state == DayNightState.Day)
         ) {
-            // schedule state update with opposite state
-            let newState = this.state == DayNightState.Day ? DayNightState.Night : DayNightState.Day;
-            this.log(`scheduling state change to ${newState}`);
-            this.switchTimeout = setTimeout(this._updateState, this.config.switchInterval, newState);
+            // and if there isn't a timeout already scheduled
+            if (!this.switchTimeout) {
+                // schedule state update with opposite state
+                let newState = this.state == DayNightState.Day ? DayNightState.Night : DayNightState.Day;
+                this.log(`scheduling state change to ${newState}`);
+                this.switchTimeout = setTimeout(this._updateState, this.config.switchInterval, newState);
+            }
         }
         // if average is in range of current state and there is timeout scheduled, clear it
         else if (this.switchTimeout) {
