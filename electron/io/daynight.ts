@@ -72,6 +72,7 @@ export default class DayNight extends IOComponent {
 
     private _clearSwitchTimeout() {
         if (this.switchTimeout) {
+            this.log("clearing switch timeout");
             clearTimeout(this.switchTimeout);
             this.switchTimeout = null;
         }
@@ -98,6 +99,7 @@ export default class DayNight extends IOComponent {
     };
 
     private _emergencyStateChange = (state: DayNightState) => {
+        this.warn(`Emergency state change to ${state}`);
         this._clearSwitchTimeout();
         this._updateState(state, false);
     };
@@ -118,8 +120,9 @@ export default class DayNight extends IOComponent {
         // add value to stack
         this.samples.push(value);
         // if light conditions are under critial, change state to night
-        if (value <= this.config.criticalThreshold) {
+        if (value <= this.config.criticalThreshold && this.state == DayNightState.Day) {
             this._emergencyStateChange(DayNightState.Night);
+            return;
         }
         this._calculateNewState();
     };
@@ -134,6 +137,7 @@ export default class DayNight extends IOComponent {
         ) {
             // schedule state update with opposite state
             let newState = this.state == DayNightState.Day ? DayNightState.Night : DayNightState.Day;
+            this.log(`scheduling state change to ${newState}`);
             this.switchTimeout = setTimeout(this._updateState, this.config.switchInterval, newState);
         }
         // if average is in range of current state and there is timeout scheduled, clear it
