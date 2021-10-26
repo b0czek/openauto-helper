@@ -9,8 +9,13 @@ export interface DayNightConfig extends IOAuxComponentConfig {
     outputGpio: number;
     // threshold conditioning switching between day and night
     threshold: number;
-    // when current value drops below criticalThreshold, state is immidiately changed to night
+    // when current value drops below criticalThreshold,
+    // state is immidiately(or after x readings if criticalStreak specified) changed to night
     criticalThreshold: number;
+    // how many times reading must be below criticalThreshold to change state to night
+    // if not specified, state is changed after 1 reading
+    // used for delaying sensor reaction time
+    criticalStreak?: number;
     // how many error can happen in a row before immidiate change of state (similiar to criticalThreshold)
     maxErrorStreak: number;
     // size of samples which are used to calculate average light conditions
@@ -44,6 +49,8 @@ export default class DayNight extends IOComponent {
         super(config, ios);
         this.config = config;
         this.deadZone = config.deadZone * config.threshold;
+        if (!this.config.criticalStreak) this.config.criticalStreak = 1;
+
         // get lightsensor component
         let component = aux.find((component) => component.type == "lightsensor");
         if (!component) {
@@ -104,6 +111,7 @@ export default class DayNight extends IOComponent {
         this._updateState(state, false);
     };
 
+    private _criticalStreak: number = 0;
     private _onLightChange = (err: any, value: number | null) => {
         if (err || value === null) {
             // increment the counter if there was an error
@@ -121,9 +129,14 @@ export default class DayNight extends IOComponent {
         this.samples.push(value);
         // if light conditions are under critial, change state to night
         if (value <= this.config.criticalThreshold && this.state == DayNightState.Day) {
-            this._emergencyStateChange(DayNightState.Night);
-            return;
+            this._criticalStreak++;
+            // if criticalStreak is not specified, it's set to 1 in constructor so non-null checking is unnecessary
+            if (this._criticalStreak >= this.config.criticalStreak!) {
+                this._emergencyStateChange(DayNightState.Night);
+                return;
+            }
         }
+        this._criticalStreak = 0;
         this._calculateNewState();
     };
 

@@ -118,6 +118,7 @@ const config: Config = {
                 threshold: 150,
                 maxErrorStreak: 5,
                 criticalThreshold: 50,
+                criticalStreak: 2,
                 sampleSize: 50,
                 switchInterval: 90,
                 deadZone: 0.05,
