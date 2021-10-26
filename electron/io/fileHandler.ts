@@ -21,7 +21,7 @@ export default class Component extends IOComponent {
             if (config.filetype == "json") this.file = JSON.parse(rawFile);
             else if (config.filetype == "raw") this.file = rawFile;
         } catch (err) {
-            console.error(`could not open file ${config.filepath}`);
+            this.error(`could not open file ${config.filepath}`);
             this.fileError = err.toString();
             this.file = null;
         }

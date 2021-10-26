@@ -29,19 +29,20 @@ export default class IOComponent implements IIOComponent {
     }
 
     protected log = (message: any) => console.log(this.buildMessage(message, "INFO"));
-    protected warn = (message: any) => console.warn(this.buildMessage(message, "WARN", "\x1b[33m%s\x1b[0m"));
-    protected error = (message: any) => console.error(this.buildMessage(message, "ERROR", "\x1b[31m%s\x1b[0m"));
+    protected warn = (message: any) => console.warn("\x1b[33m%s\x1b[0m", this.buildMessage(message, "WARN"));
+    protected error = (message: any) => console.error("\x1b[31m%s\x1b[0m", this.buildMessage(message, "ERROR"));
 
-    private buildMessage(message: any, type: string, formatting?: string): string {
-        return `${formatting}[${type}: ${this.getTime()}](${this.type}-${this.name}): ${message}`;
+    private buildMessage(message: any, type: string): string {
+        return `[${type}: ${this.getTime()}](${this.type}-${this.name}): ${message}`;
     }
     private getTime(): string {
         let now = new Date();
-        return `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+        const lPad = (n: number) => n.toString().padStart(2, "0");
+        return `${lPad(now.getHours())}:${lPad(now.getMinutes())}:${lPad(now.getSeconds())}`;
     }
 
     public close() {
-        console.log(`closing ${this.name}`);
+        this.log(`closing ${this.name}`);
     }
 }
 /**

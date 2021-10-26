@@ -24,7 +24,7 @@ export default class LightSensor extends IOComponent {
         this.sensor = new Tsl2561();
         this._readSensor = this._readSensor.bind(this);
         this._initSensor().catch((err) => {
-            console.error(`${this.config.name} could not be initialized ${err.toString()}`);
+            this.error(`${this.config.name} could not be initialized ${err.toString()}`);
         });
 
         this.ios.ipcMain.on(this.name, () => {
@@ -77,10 +77,9 @@ export default class LightSensor extends IOComponent {
             // if there was an error last time reading sensor
             if (this.value === null || isOutsideRange(this.value, reading, this.config.changeInsensitivity)) {
                 this._emitChange(null, reading);
-                console.log(reading);
             }
         } catch (err) {
-            console.log(err);
+            this.log(`error reading sensor ${err.toString()}`);
             this._emitChange(err, null);
         }
     };

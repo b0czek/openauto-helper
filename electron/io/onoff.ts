@@ -26,11 +26,7 @@ export default class OnOff extends IOComponent {
         // if pin has auxilliary pin for feedback provided
         if (config.feedbackGpioNumber) {
             this.feedback = new Gpio(config.feedbackGpioNumber, "in", "both");
-            this.feedback.watch((err, value) => {
-                console.log(err);
-                console.log(value);
-                this._readCallback(err, value);
-            });
+            this.feedback.watch(this._readCallback);
         }
 
         // initialize pin to offstate
@@ -88,8 +84,7 @@ export default class OnOff extends IOComponent {
     };
 
     // calculate new state by subtracting current value from 1 (1-0 = 1, 1-1 = 0)
-    private _getOppositeState = (oldState: BinaryValue): BinaryValue =>
-        (1 - oldState) as BinaryValue;
+    private _getOppositeState = (oldState: BinaryValue): BinaryValue => (1 - oldState) as BinaryValue;
 
     private _writeCallback = (err: Error | null | undefined) => {
         if (err) {
@@ -99,6 +94,9 @@ export default class OnOff extends IOComponent {
     };
 
     private _readCallback: ValueCallback = (err, value) => {
+        if (err) {
+            this.error(`error while reading gpio ${err.toString}`);
+        }
         this.sendState(err, value);
     };
 }
