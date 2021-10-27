@@ -10,7 +10,11 @@ export interface LightSensorConfig extends IOComponentConfig {
     gain?: Gains;
     intergrationTime?: IntegrationTimes;
 }
-type ChangeCallback = (err: any, value: number | null) => void;
+type Callback = (err: any, value: number | null) => void;
+interface CallbackData {
+    callback: Callback;
+    type: "any" | "change";
+}
 
 export default class LightSensor extends IOComponent {
     private config: LightSensorConfig;
@@ -32,22 +36,31 @@ export default class LightSensor extends IOComponent {
         });
     }
 
-    private callbacks: ChangeCallback[] = [];
-    public watchForChanges(cb: ChangeCallback) {
-        this.callbacks.push(cb);
+    private callbacks: CallbackData[] = [];
+    // watch for readings outside change insensitivity
+    public watchForChanges(cb: Callback) {
+        this.callbacks.push({
+            callback: cb,
+            type: "change"
+        });
+    }
+    // watch for any reading
+    public watch(cb:Callback) {
+        this.callbacks.push({
+            callback:cb,
+            type: "any"
+        });
     }
 
-    public unwatch(callback: ChangeCallback) {
-        this.callbacks = this.callbacks.filter((cb) => cb !== callback);
+    public unwatch(callback: Callback) {
+        this.callbacks = this.callbacks.filter(data => data.callback !== callback);
     }
 
     private _emitChange(err: any, data: number | null) {
         this.sendState(err, data);
         this.value = data;
 
-        for (let cb of this.callbacks) {
-            cb(err, data);
-        }
+        this.callbacks.forEach(d => d.callback(err, data));
     }
 
     private async _initSensor(): Promise<void> {
@@ -77,6 +90,9 @@ export default class LightSensor extends IOComponent {
             // if there was an error last time reading sensor
             if (this.value === null || isOutsideRange(this.value, reading, this.config.changeInsensitivity)) {
                 this._emitChange(null, reading);
+            }
+            else {
+                this.callbacks.filter((d) => d.type === "any").forEach((d) => d.callback(null, reading));
             }
         } catch (err) {
             this.log(`error reading sensor ${err.toString()}`);
