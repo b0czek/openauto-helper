@@ -135,8 +135,9 @@ export default class DayNight extends IOComponent {
                 this._emergencyStateChange(DayNightState.Night);
                 return;
             }
+        } else {
+            this._criticalStreak = 0;
         }
-        this._criticalStreak = 0;
         this._calculateNewState();
     };
 
