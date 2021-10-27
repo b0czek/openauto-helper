@@ -2,7 +2,6 @@ import path from "path";
 import isDev from "electron-is-dev";
 import { app, BrowserWindow, ipcMain } from "electron";
 
-import AppAppearance from "./appearance";
 import IO from "./io/io";
 
 const createWindow = async () => {
@@ -17,22 +16,13 @@ const createWindow = async () => {
         },
     });
 
-    AppAppearance.init(win.webContents, ipcMain);
-
     if (isDev) {
         // load dev server
         win.loadURL("http://localhost:3000/index.html");
 
         // hot reloading
         require("electron-reload")(__dirname, {
-            electron: path.join(
-                __dirname,
-                "..",
-                "..",
-                "node_modules",
-                ".bin",
-                "electron"
-            ),
+            electron: path.join(__dirname, "..", "..", "node_modules", ".bin", "electron"),
             forceHardReset: true,
             hardResetMethod: "exit",
         });
@@ -54,7 +44,6 @@ app.whenReady().then(createWindow);
 
 app.on("window-all-closed", () => {
     if (process.platform !== "darwin") {
-        AppAppearance.stop();
         IO.close();
         app.quit();
     }

@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
-import AppAppearance from "./appearance";
+import { appearanceFallback } from "./appearance";
 
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
@@ -13,4 +13,4 @@ contextBridge.exposeInMainWorld("api", {
     },
     invoke: (channel: string, ...data: any) => ipcRenderer.invoke(channel, ...data),
 });
-contextBridge.exposeInMainWorld("appearance", AppAppearance.readColorConfig());
+contextBridge.exposeInMainWorld("appearance", appearanceFallback);

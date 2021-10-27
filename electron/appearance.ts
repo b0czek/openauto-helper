@@ -1,103 +1,55 @@
-import { IpcMain, WebContents } from "electron";
-import ini from "iniparser";
-import lodash from "lodash";
-import fs from "fs";
+type RecursivePartial<T> = {
+    [P in keyof T]?: RecursivePartial<T[P]>;
+};
+export const appearanceFallback: RecursivePartial<OpenAutoConfig> = {
+    Day: {
+        WallpaperPath: "",
+        WallpaperMode: "0",
+        WallpaperOpacity: "100",
+        BackgroundColor: "#4b4b4b",
+        HighlightColor: "#1f85ff",
+        ControlBackground: "#e2e2e2",
+        ControlForeground: "#1f85ff",
+        NormalFontColor: "#000000",
+        SpecialFontColor: "#000000",
+        DescriptionFontColor: "#202020",
+        BarBackgroundColor: "#b2b2b2",
+        ControlBoxBackgroundColor: "#808080",
+        GaugeIndicatorColor: "#f5b42a",
+        IconShadowColor: "#60000000",
+        IconColor: "#000000",
+        SideWidgetBackgroundColor: "#b2b2b2",
+        BarShadowColor: "#333333",
+    },
+    Night: {
+        WallpaperPath: "",
+        WallpaperMode: "0",
+        WallpaperOpacity: "100",
+        BackgroundColor: "#4b4b4b",
+        HighlightColor: "#f5b42a",
+        ControlBackground: "#000000",
+        ControlForeground: "#f5b42a",
+        NormalFontColor: "#ffffff",
+        SpecialFontColor: "#f5b42a",
+        DescriptionFontColor: "#888888",
+        BarBackgroundColor: "#000000",
+        ControlBoxBackgroundColor: "#181818",
+        GaugeIndicatorColor: "#f5b42a",
+        IconShadowColor: "#80000000",
+        IconColor: "#ffffff",
+        SideWidgetBackgroundColor: "#000000",
+        BarShadowColor: "#333333",
+    },
 
-import cfg from "./config";
+    Appearance: {
+        ControlsOpacity: "25",
+    },
+};
 
-const config = cfg.appearance;
-
-export interface IAppearance {
-    colors: IColors;
-    opacity: number;
-}
-export interface IColors {
-    day: Colors;
-    night: Colors;
-}
-
-export interface IAppearanceConfig {
-    iniFilePath: string;
-    fallbackValues: IAppearance;
-}
-
-export default class AppAppearance {
-    public static colorConfig: IAppearance = config.fallbackValues;
-    private static watcher: fs.FSWatcher | null = null;
-
-    public static readColorConfig(): IAppearance {
-        let result: OpenAutoConfig;
-        try {
-            result = ini.parseSync<OpenAutoConfig>(config.iniFilePath);
-        } catch {
-            console.log(
-                "Color configuration could not be read, falling back to default values"
-            );
-            return config.fallbackValues;
-        }
-        if (lodash.isEmpty(result)) {
-            throw new Error("Read config was empty");
-        }
-        return {
-            colors: {
-                day: result.Day,
-                night: result.Night,
-            },
-            opacity: parseInt(result.Appearance.ControlsOpacity) / 100,
-        };
-    }
-
-    private static watchForConfigChanges(
-        callback: (newConfig: IAppearance) => void
-    ) {
-        AppAppearance.colorConfig = AppAppearance.readColorConfig();
-
-        if (!fs.existsSync(config.iniFilePath)) {
-            return;
-        }
-        AppAppearance.watcher = fs.watch(
-            config.iniFilePath,
-            {
-                encoding: "utf-8",
-                persistent: true,
-                recursive: false,
-            },
-            (event, _filename) => {
-                if (event == "change") {
-                    let newConfig: IAppearance;
-                    // sometimes autoapp writes empty file before saving
-                    try {
-                        newConfig = AppAppearance.readColorConfig();
-                    } catch (e) {
-                        console.error(e.toString());
-                        return;
-                    }
-
-                    if (!lodash.isEqual(newConfig, AppAppearance.colorConfig)) {
-                        console.log(`Detected AutoApp's config change.`);
-                        callback(newConfig);
-                        AppAppearance.colorConfig = newConfig;
-                    }
-                }
-            }
-        );
-    }
-
-    public static init = (webContents: WebContents, ipcMain: IpcMain) => {
-        AppAppearance.colorConfig = AppAppearance.readColorConfig();
-        ipcMain.on("appearance", () => {
-            webContents.send("appearance", AppAppearance.colorConfig);
-        });
-        AppAppearance.watchForConfigChanges((newConfig) => {
-            webContents.send("appearance", newConfig);
-        });
-    };
-
-    public static stop = () => {
-        if (AppAppearance.watcher) AppAppearance.watcher.close();
-    };
-}
-
+// types from openauto_system.ini config file
+//
+//
+//
 // iniparser parses everything to strings ¯\_(ツ)_/¯
 
 export interface Units {
