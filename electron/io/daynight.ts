@@ -133,11 +133,10 @@ export default class DayNight extends IOComponent {
             // if criticalStreak is not specified, it's set to 1 in constructor so non-null checking is unnecessary
             if (this._criticalStreak >= this.config.criticalStreak!) {
                 this._emergencyStateChange(DayNightState.Night);
-                return;
             }
-        } else {
-            this._criticalStreak = 0;
+            return;
         }
+        this._criticalStreak = 0;
         this._calculateNewState();
     };
 
