@@ -1,0 +1,38 @@
+{
+	"Component class": {
+		"scope": "javascript, typescript",
+		"prefix": "iocomponent",
+		"body": [
+			"import { RendererIO } from './io';",
+			"import IOComponent, { IOComponentConfig } from './ioComponent';",
+			"",
+			"export interface ${1:ComponentConfig} extends IOComponentConfig {}",
+			"",
+			"export default class ${2:Component} extends IOComponent {",
+			"    constructor(config: ${1:ComponentConfig}, ios: RendererIO) {",
+			"        super(config, ios);",
+			"    }",
+			"",
+			"}"
+		],
+		"description": "Create new component class boilerplate"
+	},
+	"Component class auxilliary": {
+		"scope": "javascript, typescript",
+		"prefix": "iocomponentaux",
+		"body": [
+			"import { RendererIO } from './io';",
+			"import IOComponent, { IOComponentConfig } from './ioComponent';",
+			"",
+			"export interface ${1:ComponentConfig} extends IOAuxComponentConfig {}",
+			"",
+			"export default class ${2:Component} extends IOComponent {",
+			"    constructor(config: ${1:ComponentConfig}, ios: RendererIO) {",
+			"        super(config, ios);",
+			"    }",
+			"",
+			"}"
+		],
+		"description": "Create new component class with auxilliary dependency boilerplate"
+	}
+}
