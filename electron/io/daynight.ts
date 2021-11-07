@@ -1,10 +1,10 @@
 import { Gpio } from "onoff";
 
 import { RendererIO } from "./io";
-import IOComponent, { IOAuxComponentConfig } from "./ioComponent";
+import IOComponent, { IOComponentConfig } from "./ioComponent";
 import LightSensor from "./lightsensor";
 
-export interface DayNightConfig extends IOAuxComponentConfig {
+export interface DayNightConfig extends IOComponentConfig {
     // gpio to be used for interfacing with openauto
     outputGpio: number;
     // threshold conditioning switching between day and night
