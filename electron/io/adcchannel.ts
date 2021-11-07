@@ -1,6 +1,6 @@
 import IO, { RendererIO } from "./io";
 import IOComponent, { IOComponentConfig } from "./ioComponent";
-import MCP3424, { Channels } from "./mcp3424";
+import MCP3424, { Channels } from "./adc/mcp3424";
 
 export interface AdcChannelConfig extends IOComponentConfig {
     adcChannel: Channels;
@@ -14,10 +14,10 @@ export default class AdcChannel extends IOComponent {
     private mcp: MCP3424;
     private config: AdcChannelConfig;
 
-    constructor(config: AdcChannelConfig, ios: RendererIO) {
+    constructor(config: AdcChannelConfig, ios: RendererIO, ...aux: MCP3424[]) {
         super(config, ios);
         this.config = config;
-        this.mcp = IO.adc;
+        this.mcp = this.getAuxComponent({ type: "mcp3424" }, aux);
         this.mcp.openChannel(config.adcChannel);
         this.mcp.watch(config.adcChannel, this._mcpCallback);
         this.ios.ipcMain.on(this.name, (_) => {
@@ -45,8 +45,6 @@ export default class AdcChannel extends IOComponent {
         }
         // https://stackoverflow.com/questions/51494376/how-to-transform-one-numerical-scale-into-another
         // x in [a,b] => z = (d-c) * (x-a) / (b-a) + c in [c,d]
-        return (
-            ((maxValue - minValue) * (voltage - minVoltage)) / (maxVoltage - minVoltage) + minValue
-        );
+        return ((maxValue - minValue) * (voltage - minVoltage)) / (maxVoltage - minVoltage) + minValue;
     }
 }

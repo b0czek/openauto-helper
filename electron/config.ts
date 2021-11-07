@@ -1,21 +1,23 @@
 import { appearanceFallback } from "./appearance";
-import { IOConfig, Compontents } from "./io/io";
+import { IOConfig } from "./io/io";
 export interface Config {
     io: IOConfig;
 }
 
 const config: Config = {
     io: {
-        mcp3424: {
-            address: 0x6c,
-            resolution: 1,
-            gain: 0,
-            busNumber: 1,
-            // interval specifies interval for reading one channel
-            readingInterval: 100,
-            changeInsensitivity: 50,
-        },
         components: [
+            {
+                type: "mcp3424",
+                name: "adc",
+                address: 0x6c,
+                resolution: 1,
+                gain: 0,
+                busNumber: 1,
+                // interval specifies interval for reading one channel
+                readingInterval: 100,
+                changeInsensitivity: 50,
+            },
             {
                 type: "adcChannel",
                 name: "oilpressure",
@@ -24,6 +26,7 @@ const config: Config = {
                 maxValue: 5.0,
                 minVoltage: 0.5,
                 maxVoltage: 4.5,
+                auxDependencies: "adc",
             },
             {
                 type: "onoff",

@@ -3,6 +3,7 @@ import isDev from "electron-is-dev";
 import { app, BrowserWindow, ipcMain } from "electron";
 
 import IO from "./io/io";
+let io: IO;
 
 const createWindow = async () => {
     const win = new BrowserWindow({
@@ -38,13 +39,13 @@ const createWindow = async () => {
     win.setPosition(0, 0);
     win.setFullScreen(true);
 
-    IO.init(win.webContents, ipcMain);
+    io = new IO(win.webContents, ipcMain);
 };
 app.whenReady().then(createWindow);
 
 app.on("window-all-closed", () => {
     if (process.platform !== "darwin") {
-        IO.close();
+        io.close();
         app.quit();
     }
 });

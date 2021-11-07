@@ -2,7 +2,7 @@ import { IpcMain, WebContents } from "electron";
 
 import cfg from "../config";
 import IOComponent, { IOComponentConfig } from "./ioComponent";
-import MCP3424, { MCP3424Options } from "./mcp3424";
+import MCP3424, { MCP3424Config } from "./adc/mcp3424";
 import AdcChannel, { AdcChannelConfig } from "./adcchannel";
 import OnOff, { OnOffConfig } from "./onoff";
 import DS18B20, { DS18B20Config } from "./ds18b20";
@@ -17,8 +17,8 @@ export interface RendererIO {
     webContents: WebContents;
     ipcMain: IpcMain;
 }
-export type ComponentType = typeof IOComponent;
-const ComponentTypes = {
+export const ComponentTypes = {
+    mcp3424: MCP3424,
     onoff: OnOff,
     adcChannel: AdcChannel,
     ds18b20: DS18B20,
@@ -28,10 +28,13 @@ const ComponentTypes = {
     daynight: DayNight,
 };
 
-export type Compontents = keyof typeof ComponentTypes;
-const Types: Record<Compontents, ComponentType> = ComponentTypes;
+export type ComponentNames = keyof typeof ComponentTypes;
+export type ComponentsConstructors = typeof ComponentTypes[ComponentNames];
+export type Components = InstanceType<ComponentsConstructors>;
+const Types: Record<ComponentNames, ComponentsConstructors> = ComponentTypes;
 
 export type ComponentConfigs =
+    | MCP3424Config
     | OnOffConfig
     | AdcChannelConfig
     | DS18B20Config
@@ -41,25 +44,26 @@ export type ComponentConfigs =
     | DayNightConfig;
 
 export interface IOConfig {
-    mcp3424: MCP3424Options;
     components: ComponentConfigs[];
 }
 
 export default class IO {
-    private static ios: RendererIO;
-    public static adc: MCP3424;
-    private static components: IOComponent[] = [];
-    public static init = (webContents: WebContents, ipcMain: IpcMain) => {
-        IO.ios = {
+    private ios: RendererIO;
+    private components: Components[] = [];
+    public constructor(webContents: WebContents, ipcMain: IpcMain) {
+        this.ios = {
             webContents,
             ipcMain,
         };
-        IO.adc = new MCP3424(config.mcp3424);
         for (let component of config.components) {
             try {
                 if (component.type in Types) {
                     let IOConstructor = Types[component.type];
-                    IO.components.push(new IOConstructor(component, IO.ios, ...IO.appendDependencies(component)));
+                    // @ts-expect-error
+                    // config parameter in constructor is intersected and
+                    // would require every field of every type of config to be filled
+                    // but they must be complete for a specific type anyway
+                    this.components.push(new IOConstructor(component, this.ios, ...this.appendDependencies(component)));
                 } else {
                     throw new Error("Invalid component configuration");
                 }
@@ -67,23 +71,22 @@ export default class IO {
                 console.error(`${component.name} could not be initialized: ${err.toString()}`);
             }
         }
-    };
-    private static appendDependencies(component: ComponentConfigs): IOComponent[] {
+    }
+    private appendDependencies(component: ComponentConfigs): Components[] {
         if ("auxDependencies" in component && component.auxDependencies) {
             let dependencies = component["auxDependencies"];
             // if dependency is a string, convert it into [string]
             dependencies = Array.isArray(dependencies) ? dependencies : [dependencies];
-            return IO.components.filter((c) => dependencies.includes(c.name));
+            return this.components.filter((c) => dependencies.includes(c.name));
         }
         return [];
     }
 
-    public static close = () => {
-        for (let component of IO.components) {
+    public close = () => {
+        for (let component of this.components) {
             console.log(`closing ${component.name}`);
             component.close();
         }
         console.log("closing adc");
-        IO.adc.close();
     };
 }

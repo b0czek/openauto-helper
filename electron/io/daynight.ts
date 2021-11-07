@@ -27,12 +27,10 @@ export interface DayNightConfig extends IOComponentConfig {
     // then value greater than 330 would be needed to switch state
     deadZone: number;
 }
-
 export enum DayNightState {
     Day = "day",
     Night = "night",
 }
-
 export default class DayNight extends IOComponent {
     private lightSensor: LightSensor;
     private outputGpio: Gpio;
@@ -52,11 +50,7 @@ export default class DayNight extends IOComponent {
         if (!this.config.criticalStreak) this.config.criticalStreak = 1;
 
         // get lightsensor component
-        let component = aux.find((component) => component.type == "lightsensor");
-        if (!component) {
-            throw new Error("LightSensor component was not provided to DayNight component");
-        }
-        this.lightSensor = component;
+        this.lightSensor = this.getAuxComponent({ type: "lightsensor" }, aux);
 
         this.samples = new SensorSamples(this.config.sampleSize);
 
