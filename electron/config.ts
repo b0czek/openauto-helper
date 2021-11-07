@@ -15,10 +15,10 @@ const config: Config = {
             readingInterval: 100,
             changeInsensitivity: 50,
         },
-        channels: [
+        components: [
             {
                 type: "adcChannel",
-                name: "oilpressure.0",
+                name: "oilpressure",
                 adcChannel: 0,
                 minValue: 0.0,
                 maxValue: 5.0,
@@ -27,13 +27,13 @@ const config: Config = {
             },
             {
                 type: "onoff",
-                name: "foglights.0",
+                name: "foglights",
                 gpioNumber: 19,
                 activeLow: false,
             },
             {
                 type: "onoff",
-                name: "eco.0",
+                name: "eco",
                 gpioNumber: 26,
                 activeLow: false,
                 feedbackGpioNumber: 21,
@@ -41,14 +41,14 @@ const config: Config = {
             },
             {
                 type: "ds18b20",
-                name: "thermometer.0",
+                name: "thermometer",
                 sensorId: "28-0417b31c59ff",
                 changeInsensitivity: 0.1,
                 readingInterval: 1000,
             },
             {
                 type: "gpioBuffer",
-                name: "reverseCamera.0",
+                name: "reverseCamera",
                 inputGpio: 20,
                 outputGpio: 27,
                 activeLow: false,

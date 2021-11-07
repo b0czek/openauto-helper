@@ -6,10 +6,10 @@ import "./Content.scss";
 import LightSensor from "./LightSensor";
 const Content = () => (
     <div className="content">
-        <OilPressureGauge ioName="oilpressure.0" />
+        <OilPressureGauge ioName="oilpressure" />
         <Watch />
         <LightSensor ioName="lightSensor" />
-        <Thermometer ioName="thermometer.0" iconPath={vanIcon} />
+        <Thermometer ioName="thermometer" iconPath={vanIcon} />
     </div>
 );
 export default Content;

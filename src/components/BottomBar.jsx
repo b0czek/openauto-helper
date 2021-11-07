@@ -14,9 +14,10 @@ const BottomBar = () => {
         <BottomBarContainer
             className="bottomBar"
             backgroundColor={getCurrentColors(appearance).BarBackgroundColor}
-            shadowColor={getCurrentColors(appearance).BarShadowColor}>
+            shadowColor={getCurrentColors(appearance).BarShadowColor}
+        >
             <div className="bottomBarContent">
-                <FogLightsSwitch ioName="foglights.0" />
+                <FogLightsSwitch ioName="foglights" />
             </div>
         </BottomBarContainer>
     );

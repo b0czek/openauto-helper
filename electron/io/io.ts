@@ -17,8 +17,8 @@ export interface RendererIO {
     webContents: WebContents;
     ipcMain: IpcMain;
 }
-export type ChannelType = typeof IOComponent;
-const ChannelTypes = {
+export type ComponentType = typeof IOComponent;
+const ComponentTypes = {
     onoff: OnOff,
     adcChannel: AdcChannel,
     ds18b20: DS18B20,
@@ -28,10 +28,10 @@ const ChannelTypes = {
     daynight: DayNight,
 };
 
-export type Compontents = keyof typeof ChannelTypes;
-const Types: Record<Compontents, ChannelType> = ChannelTypes;
+export type Compontents = keyof typeof ComponentTypes;
+const Types: Record<Compontents, ComponentType> = ComponentTypes;
 
-export type Channel =
+export type ComponentConfigs =
     | OnOffConfig
     | AdcChannelConfig
     | DS18B20Config
@@ -42,46 +42,46 @@ export type Channel =
 
 export interface IOConfig {
     mcp3424: MCP3424Options;
-    channels: Channel[];
+    components: ComponentConfigs[];
 }
 
 export default class IO {
     private static ios: RendererIO;
     public static adc: MCP3424;
-    private static channels: IOComponent[] = [];
+    private static components: IOComponent[] = [];
     public static init = (webContents: WebContents, ipcMain: IpcMain) => {
         IO.ios = {
             webContents,
             ipcMain,
         };
         IO.adc = new MCP3424(config.mcp3424);
-        for (let channel of config.channels) {
+        for (let component of config.components) {
             try {
-                if (channel.type in Types) {
-                    let IOConstructor = Types[channel.type];
-                    IO.channels.push(new IOConstructor(channel, IO.ios, ...IO.appendDependencies(channel)));
+                if (component.type in Types) {
+                    let IOConstructor = Types[component.type];
+                    IO.components.push(new IOConstructor(component, IO.ios, ...IO.appendDependencies(component)));
                 } else {
-                    throw new Error("Invalid channel configuration");
+                    throw new Error("Invalid component configuration");
                 }
             } catch (err) {
-                console.error(`${channel.name} could not be initialized: ${err.toString()}`);
+                console.error(`${component.name} could not be initialized: ${err.toString()}`);
             }
         }
     };
-    private static appendDependencies(channel: Channel): IOComponent[] {
-        if ("auxDependencies" in channel) {
-            let dependencies = channel["auxDependencies"];
+    private static appendDependencies(component: ComponentConfigs): IOComponent[] {
+        if ("auxDependencies" in component && component.auxDependencies) {
+            let dependencies = component["auxDependencies"];
             // if dependency is a string, convert it into [string]
             dependencies = Array.isArray(dependencies) ? dependencies : [dependencies];
-            return IO.channels.filter((c) => dependencies.includes(c.name));
+            return IO.components.filter((c) => dependencies.includes(c.name));
         }
         return [];
     }
 
     public static close = () => {
-        for (let channel of IO.channels) {
-            console.log(`closing ${channel.name}`);
-            channel.close();
+        for (let component of IO.components) {
+            console.log(`closing ${component.name}`);
+            component.close();
         }
         console.log("closing adc");
         IO.adc.close();

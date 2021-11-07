@@ -10,10 +10,8 @@ const TopBarContainer = styled.div`
 const TopBar = () => {
     let appearance = Appearance.useContainer();
     return (
-        <TopBarContainer
-            className="topBar"
-            backgroundColor={getCurrentColors(appearance).BarBackgroundColor}>
-            <EcoIndicator ioName="eco.0" />
+        <TopBarContainer className="topBar" backgroundColor={getCurrentColors(appearance).BarBackgroundColor}>
+            <EcoIndicator ioName="eco" />
         </TopBarContainer>
     );
 };
