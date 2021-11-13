@@ -3,7 +3,9 @@ body {
     padding: 0;
     background-color: black;
 }
-
+body::-webkit-scrollbar {
+    display: none;
+}
 .unselectable {
     -webkit-touch-callout: none;
     -webkit-user-select: none;

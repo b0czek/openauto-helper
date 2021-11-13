@@ -1,10 +1,11 @@
 import OilPressureGauge from "./OilPressureGauge";
 import Watch from "./Watch";
 import Thermometer from "./Thermometer";
-import vanIcon from "../imgs/van.png";
-import "./Content.scss";
 import LightSensor from "./LightSensor";
 import DayNight from "./DayNight";
+import ModemSignal from "./ModemSignal";
+import vanIcon from "../imgs/van.png";
+import "./Content.scss";
 const Content = () => (
     <div className="content">
         <OilPressureGauge ioName="oilpressure" />

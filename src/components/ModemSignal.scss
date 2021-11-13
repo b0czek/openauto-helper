@@ -1,0 +1,74 @@
+$bar-width: 10px;
+$bars-height: 50px;
+$bar-spacing: 5px;
+$bar-offset: $bar-width + $bar-spacing;
+.signalBars {
+    position: relative;
+    height: $bars-height;
+    width: $bar-offset * 5 - $bar-spacing;
+
+    .signalBar {
+        position: absolute;
+        bottom: 0;
+        width: $bar-width;
+        background: #ccc;
+        border-radius: 2px;
+
+        @for $i from 1 through 5 {
+            &:nth-child(#{$i}) {
+                height: 20% * $i;
+                left: ($i - 1) * $bar-offset;
+            }
+        }
+    }
+}
+@for $i from 1 through 5 {
+    .score-#{$i - 1} .signalBar {
+        @for $j from $i through 5 {
+            &:nth-child(#{$j}) {
+                background: #454545;
+            }
+        }
+    }
+}
+@keyframes lostAnimation {
+    0% {
+    }
+}
+.score-lost {
+    @extend .score-0;
+    position: relative;
+
+    &::after {
+        @extend .loading-dot;
+        right: -5px;
+    }
+    &::before {
+        @extend .loading-dot;
+        right: 15px;
+        animation-delay: 0.5s;
+    }
+}
+
+.loading-dot {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #666;
+    content: "";
+    z-index: 100;
+    bottom: -5px;
+    animation-name: dotFlashing;
+    animation-duration: 0.5s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+}
+@keyframes dotFlashing {
+    0% {
+        background-color: #777;
+    }
+    100% {
+        background-color: #fff;
+    }
+}

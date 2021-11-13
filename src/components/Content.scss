@@ -3,4 +3,5 @@
 .content {
     margin-top: $content-top-margin;
     margin-left: $content-left-margin;
+    padding-bottom: $bottom-bar-height + 1px + $content-top-margin;
 }

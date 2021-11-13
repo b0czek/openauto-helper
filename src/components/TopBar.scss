@@ -1,6 +1,9 @@
 @import "../config.scss";
 
 .topBar {
+    position: sticky;
+    top: 0;
+    z-index: 150;
     height: $top-bar-height;
     width: 100%;
     display: flex;

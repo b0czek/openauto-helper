@@ -10,6 +10,7 @@ import GPIOBuffer, { GPIOBufferConfig } from "./gpiobuffer";
 import LightSensor, { LightSensorConfig } from "./lightsensor";
 import FileHandler, { FileHandlerConfig } from "./fileHandler";
 import DayNight, { DayNightConfig } from "./daynight";
+import ModemSignal, { ModemSignalConfig } from "./modemsignal";
 
 const config = cfg.io;
 
@@ -26,6 +27,7 @@ export const ComponentTypes = {
     lightsensor: LightSensor,
     filehandler: FileHandler,
     daynight: DayNight,
+    modemsignal: ModemSignal
 };
 
 export type ComponentNames = keyof typeof ComponentTypes;
@@ -41,7 +43,8 @@ export type ComponentConfigs =
     | GPIOBufferConfig
     | LightSensorConfig
     | FileHandlerConfig
-    | DayNightConfig;
+    | DayNightConfig
+    | ModemSignalConfig;
 
 export interface IOConfig {
     components: ComponentConfigs[];
