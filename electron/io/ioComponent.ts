@@ -1,5 +1,6 @@
 import { RendererIO, ComponentTypes, ComponentNames, ComponentConfigs, Components } from "./io";
 import lodash from "lodash";
+import { ipcMain } from "electron";
 // generic component config
 export interface IOComponentConfig {
     name: string;
@@ -19,8 +20,12 @@ export default abstract class IOComponent {
         this.name = opts.name;
         this.type = opts.type;
     }
-    protected sendState(err: any, data?: any) {
-        this.ios.webContents.send(this.name, err, data);
+    protected setStateListener(callback: Parameters<typeof ipcMain.on>[1], channelSuffix?: string) {
+        this.log(`setting listener on ${this._buildChannelName(channelSuffix)}`);
+        this.ios.ipcMain.on(this._buildChannelName(channelSuffix), callback);
+    }
+    protected sendState(err: any, data?: any, channelSuffix?: string) {
+        this.ios.webContents.send(this._buildChannelName(channelSuffix), err, data);
     }
 
     protected getAuxComponent<T extends ComponentNames>(
@@ -46,6 +51,8 @@ export default abstract class IOComponent {
         const lPad = (n: number) => n.toString().padStart(2, "0");
         return `${lPad(now.getHours())}:${lPad(now.getMinutes())}:${lPad(now.getSeconds())}`;
     }
+
+    private _buildChannelName = (suffix?: string): string => (suffix ? `${this.name}:${suffix}` : this.name);
 
     public close() {
         this.log(`closing ${this.name}`);

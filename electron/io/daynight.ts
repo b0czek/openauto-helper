@@ -37,7 +37,10 @@ export default class DayNight extends IOComponent {
 
     private config: DayNightConfig;
     private deadZone: number;
+
     private errorStreak: number = 0;
+    private _criticalStreak: number = 0;
+
     private samples: SensorSamples;
     private switchTimeout: number | null = null;
 
@@ -48,7 +51,6 @@ export default class DayNight extends IOComponent {
         this.config = config;
         this.deadZone = config.deadZone * config.threshold;
         if (!this.config.criticalStreak) this.config.criticalStreak = 1;
-
         // get lightsensor component
         this.lightSensor = this.getAuxComponent({ type: "lightsensor" }, aux);
 
@@ -60,15 +62,19 @@ export default class DayNight extends IOComponent {
             this._calculateNewState();
         }
         // gpio setup
-        this.outputGpio = new Gpio(this.config.outputGpio, "out");
-        this._updateGpio();
-
+        try {
+            this.outputGpio = new Gpio(this.config.outputGpio, "out");
+            this._updateGpio();
+        } catch {}
         //watch for light sensor events
         this.lightSensor.watch(this._onLightChange);
         // set a listener on ipc
         this.ios.ipcMain.on(this.name, () => {
             this.sendState(null, this.state);
         });
+        this.setStateListener(() => {
+            this.sendState(null, this.exportData(), "data");
+        }, "data");
     }
 
     private _clearSwitchTimeout() {
@@ -105,7 +111,6 @@ export default class DayNight extends IOComponent {
         this._updateState(state, false);
     };
 
-    private _criticalStreak: number = 0;
     private _onLightChange = (err: any, value: number | null) => {
         if (err || value === null) {
             // increment the counter if there was an error
@@ -121,6 +126,9 @@ export default class DayNight extends IOComponent {
         this.errorStreak = 0;
         // add value to stack
         this.samples.push(value);
+        // send new data to frontend
+        this.sendState(null, this.exportData(), "data");
+
         // if light conditions are under critial, change state to night
         if (value <= this.config.criticalThreshold && this.state == DayNightState.Day) {
             this._criticalStreak++;
@@ -155,6 +163,15 @@ export default class DayNight extends IOComponent {
             this._clearSwitchTimeout();
         }
     }
+
+    public exportData = () => {
+        return {
+            state: this.state,
+            errorStreak: this.errorStreak,
+            criticalStreak: this._criticalStreak,
+            samples: this.samples,
+        };
+    };
 
     public close() {
         this.lightSensor.unwatch(this._calculateNewState);

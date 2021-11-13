@@ -1,0 +1,14 @@
+@import "~chartist/dist/scss/chartist.scss";
+@import "../config.scss";
+.ct-label {
+    color: white;
+    font-size: 16px;
+}
+
+.daynightChart {
+    margin-top: 20px;
+}
+.dataDisplayIcon {
+    height: $content-tile-text-font-size - 15px;
+    margin-right: 10px;
+}

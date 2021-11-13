@@ -18,6 +18,16 @@ class ApiFetchComponent extends React.Component {
     handleApiInvoke(...data) {
         return window.api.invoke(this.props.ioName, ...data);
     }
+    initApiListener(channelSuffix, command) {
+        let channel = `${this.props.ioName}:${channelSuffix}`;
+
+        window.api.receive(channel, (err, data) => {
+            this.setState({
+                [channelSuffix]: err ? null : data,
+            });
+        });
+        window.api.send(channel, command);
+    }
 
     initializeApi() {
         window.api.receive(this.props.ioName, (err, apiState) => {

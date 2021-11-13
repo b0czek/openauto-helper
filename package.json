@@ -22,6 +22,7 @@
     "license": "ISC",
     "dependencies": {
         "ada-tsl2561-ts": "^1.0.1",
+        "chartist": "^0.11.4",
         "ds18b20-raspi-typescript": "^0.4.0",
         "electron-is-dev": "^2.0.0",
         "electron-reload": "^1.5.0",
@@ -32,6 +33,7 @@
         "node-sass": "^5.0.0",
         "onoff": "^6.0.2",
         "react": "^17.0.2",
+        "react-chartist": "^0.14.4",
         "react-dom": "^17.0.2",
         "react-scripts": "^4.0.3",
         "styled-components": "^5.3.0",
