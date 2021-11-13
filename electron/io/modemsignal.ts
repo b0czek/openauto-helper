@@ -18,14 +18,14 @@ export default class ModemSignal extends IOComponent {
     private monitoring: Monitoring;
     private config: ModemSignalConfig;
     private readTimeout: NodeJS.Timeout;
-    private error: Error | null;
+    private dataError: Error | null;
     private data: {} | null = null;
 
     constructor(config: ModemSignalConfig, ios: RendererIO) {
         super(config, ios);
         this.config = config;
         this.ios.ipcMain.on(this.name, () => {
-            this.sendState(this.error, this.data);
+            this.sendState(this.dataError, this.data);
         });
 
         this.openModem();
@@ -65,8 +65,8 @@ export default class ModemSignal extends IOComponent {
         console.log(`reading modem `);
         try {
             let response = await this.monitoring.status();
-            if (!isEqual(this.data, response) || this.error) {
-                this.error = null;
+            if (!isEqual(this.data, response) || this.dataError) {
+                this.dataError = null;
                 this.data = response;
                 this.sendState(null, this.data);
             }
@@ -79,26 +79,19 @@ export default class ModemSignal extends IOComponent {
                 await this.waitForModem();
             } else {
                 console.error(err.toString());
-                this.error = err;
+                this.dataError = err;
                 this.data = null;
-                this.sendState(this.error, null);
+                this.sendState(this.dataError, null);
             }
         }
 
-        this.readTimeout = setTimeout(
-            this.readModem,
-            this.config.readingInterval
-        );
+        this.readTimeout = setTimeout(this.readModem, this.config.readingInterval);
     };
 
     private resetSession = async () => {
         try {
             this.connection.reload();
-            const user = new User(
-                this.connection,
-                this.config.username,
-                this.config.password
-            );
+            const user = new User(this.connection, this.config.username, this.config.password);
             await user.login();
         } catch (err) {
             console.error(err);
