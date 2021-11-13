@@ -7,9 +7,17 @@ import sunIcon from "../imgs/sun.png";
 import moonIcon from "../imgs/moon.png";
 import "./ContentTiles.scss";
 class LightSensor extends ApiFetchComponent {
+    state = {
+        displayValue: false,
+    };
+    toggleDisplay = () => {
+        this.setState({
+            displayValue: !this.state.displayValue,
+        });
+    };
     render() {
         return (
-            <ShortTile>
+            <ShortTile onClick={this.toggleDisplay}>
                 <ShortTile.Text>
                     <img
                         src={this.props.appearance.daynight === "night" ? moonIcon : sunIcon}
@@ -18,12 +26,7 @@ class LightSensor extends ApiFetchComponent {
                     />
                 </ShortTile.Text>
                 <ShortTile.Content>
-                    <SliderDisplay
-                        style={{ width: "100%" }}
-                        max={400}
-                        value={this.state.apiState ?? 0}
-                        updateSpeed={100}
-                    />
+                    <SliderDisplay max={400} value={this.state.apiState ?? 0} displayValue={this.state.displayValue} />
                 </ShortTile.Content>
             </ShortTile>
         );
