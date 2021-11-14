@@ -1,7 +1,6 @@
 import { IpcMain, WebContents } from "electron";
 
 import cfg from "../config";
-import IOComponent, { IOComponentConfig } from "./ioComponent";
 import MCP3424, { MCP3424Config } from "./adc/mcp3424";
 import AdcChannel, { AdcChannelConfig } from "./adcchannel";
 import OnOff, { OnOffConfig } from "./onoff";
@@ -27,7 +26,7 @@ export const ComponentTypes = {
     lightsensor: LightSensor,
     filehandler: FileHandler,
     daynight: DayNight,
-    modemsignal: ModemSignal
+    modemsignal: ModemSignal,
 };
 
 export type ComponentNames = keyof typeof ComponentTypes;
@@ -90,6 +89,5 @@ export default class IO {
             console.log(`closing ${component.name}`);
             component.close();
         }
-        console.log("closing adc");
     };
 }
