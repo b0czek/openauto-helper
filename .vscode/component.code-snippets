@@ -13,6 +13,7 @@
 			"        super(config, ios);",
 			"    }",
 			"",
+			"    close() {}",
 			"}"
 		],
 		"description": "Create new component class boilerplate"

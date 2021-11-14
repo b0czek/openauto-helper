@@ -58,9 +58,7 @@ export default abstract class IOComponent {
 
     private _buildChannelName = (suffix?: string): string => (suffix ? `${this.name}:${suffix}` : this.name);
 
-    public close() {
-        this.log(`closing ${this.name}`);
-    }
+    public abstract close(): void;
 }
 /**
  * IOComponent extending class template
