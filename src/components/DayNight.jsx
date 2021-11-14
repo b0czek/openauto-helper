@@ -1,4 +1,4 @@
-import ChartistGraph from "react-chartist";
+import React from "react";
 import styled from "styled-components";
 
 import ApiFetchComponent from "./ApiFetchComponent";
@@ -7,6 +7,8 @@ import { getCurrentColors, subscribeAsProp } from "../appearance";
 import balanceScale from "../imgs/balancescale.svg";
 import "./DayNight.scss";
 import "../index.scss";
+
+const ChartistGraph = React.lazy(() => import("react-chartist"));
 
 const average = (arr) => (arr.reduce((a, b) => a + b, 0) / arr.length || 0).toFixed(1);
 
@@ -44,7 +46,15 @@ class DayNight extends ApiFetchComponent {
             <ContentTiles>
                 <ContentTiles.Content>
                     <ChartWrapper graphColor={getCurrentColors(this.props.appearance).ControlForeground}>
-                        <ChartistGraph data={this.getData()} options={options} type="Line" className="daynightChart" />
+                        {/* load chart lazily to improve boot time */}
+                        <React.Suspense fallback={<></>}>
+                            <ChartistGraph
+                                data={this.getData()}
+                                options={options}
+                                type="Line"
+                                className="daynightChart"
+                            />
+                        </React.Suspense>
                     </ChartWrapper>
                 </ContentTiles.Content>
                 <ContentTiles.Text>
