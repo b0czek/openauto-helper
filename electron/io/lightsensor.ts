@@ -31,7 +31,7 @@ export default class LightSensor extends IOComponent {
             this.error(`${this.config.name} could not be initialized ${err.toString()}`);
         });
 
-        this.ios.ipcMain.on(this.name, () => {
+        this.setStateListener(() => {
             this.sendState(null, this.value ?? 0);
         });
     }
@@ -41,26 +41,26 @@ export default class LightSensor extends IOComponent {
     public watchForChanges(cb: Callback) {
         this.callbacks.push({
             callback: cb,
-            type: "change"
+            type: "change",
         });
     }
     // watch for any reading
-    public watch(cb:Callback) {
+    public watch(cb: Callback) {
         this.callbacks.push({
-            callback:cb,
-            type: "any"
+            callback: cb,
+            type: "any",
         });
     }
 
     public unwatch(callback: Callback) {
-        this.callbacks = this.callbacks.filter(data => data.callback !== callback);
+        this.callbacks = this.callbacks.filter((data) => data.callback !== callback);
     }
 
     private _emitChange(err: any, data: number | null) {
         this.sendState(err, data);
         this.value = data;
 
-        this.callbacks.forEach(d => d.callback(err, data));
+        this.callbacks.forEach((d) => d.callback(err, data));
     }
 
     private async _initSensor(): Promise<void> {
@@ -90,8 +90,7 @@ export default class LightSensor extends IOComponent {
             // if there was an error last time reading sensor
             if (this.value === null || isOutsideRange(this.value, reading, this.config.changeInsensitivity)) {
                 this._emitChange(null, reading);
-            }
-            else {
+            } else {
                 this.callbacks.filter((d) => d.type === "any").forEach((d) => d.callback(null, reading));
             }
         } catch (err) {

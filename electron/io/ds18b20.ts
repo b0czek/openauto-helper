@@ -22,7 +22,7 @@ export default class DS18B20 extends IOComponent {
             this._readTemp();
         }, this.config.readingInterval);
 
-        this.ios.ipcMain.on(this.name, () => {
+        this.setStateListener(() => {
             this.sendState(null, this.temp);
         });
     }

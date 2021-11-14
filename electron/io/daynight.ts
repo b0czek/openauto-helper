@@ -69,7 +69,7 @@ export default class DayNight extends IOComponent {
         //watch for light sensor events
         this.lightSensor.watch(this._onLightChange);
         // set a listener on ipc
-        this.ios.ipcMain.on(this.name, () => {
+        this.setStateListener(() => {
             this.sendState(null, this.state);
         });
         this.setStateListener(() => {

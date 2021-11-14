@@ -41,12 +41,12 @@ export default class FileHandler extends IOComponent {
             );
         }
 
-        this.ios.ipcMain.on(this.name, (_, message: any) => {
+        this.setStateListener((_, message: any) => {
             if (message === "read") {
                 this.sendState(this.fileError, this.fileData);
             }
         });
-        this.ios.ipcMain.handle(this.name, (_, data: string): boolean => {
+        this.setStateHandler((_, data: string): boolean => {
             return this._updateFile(data);
         });
     }

@@ -20,7 +20,7 @@ export default class AdcChannel extends IOComponent {
         this.mcp = this.getAuxComponent({ type: "mcp3424" }, aux);
         this.mcp.openChannel(config.adcChannel);
         this.mcp.watch(config.adcChannel, this._mcpCallback);
-        this.ios.ipcMain.on(this.name, (_) => {
+        this.setStateListener(() => {
             this.sendState(null, this._calculateValue());
         });
     }

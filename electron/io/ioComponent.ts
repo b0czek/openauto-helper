@@ -20,6 +20,10 @@ export default abstract class IOComponent {
         this.name = opts.name;
         this.type = opts.type;
     }
+    protected setStateHandler(callback: Parameters<typeof ipcMain.handle>[1], channelSuffix?: string) {
+        this.log(`setting handler on ${this._buildChannelName(channelSuffix)}`);
+        this.ios.ipcMain.handle(this._buildChannelName(channelSuffix), callback);
+    }
     protected setStateListener(callback: Parameters<typeof ipcMain.on>[1], channelSuffix?: string) {
         this.log(`setting listener on ${this._buildChannelName(channelSuffix)}`);
         this.ios.ipcMain.on(this._buildChannelName(channelSuffix), callback);

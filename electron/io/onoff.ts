@@ -37,7 +37,7 @@ export default class OnOff extends IOComponent {
         }
 
         //watch for requestes from frontend
-        this.ios.ipcMain.on(this.name, (_: IpcMainEvent, message: any) => {
+        this.setStateListener((_: IpcMainEvent, message: any) => {
             // if the message is read, send the current gpio state back
             if (message === "read") {
                 if (config.feedbackGpioNumber) {

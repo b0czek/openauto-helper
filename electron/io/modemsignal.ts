@@ -24,7 +24,7 @@ export default class ModemSignal extends IOComponent {
     constructor(config: ModemSignalConfig, ios: RendererIO) {
         super(config, ios);
         this.config = config;
-        this.ios.ipcMain.on(this.name, () => {
+        this.setStateListener(() => {
             this.sendState(this.dataError, this.data);
         });
 
