@@ -9,6 +9,7 @@ const config: Config = {
         components: [
             {
                 type: "mcp3424",
+                class: "adc",
                 name: "adc",
                 address: 0x6c,
                 resolution: 1,
@@ -19,7 +20,7 @@ const config: Config = {
                 changeInsensitivity: 50,
             },
             {
-                type: "adcChannel",
+                type: "adcchannel",
                 name: "oilpressure",
                 adcChannel: 0,
                 minValue: 0.0,
@@ -50,7 +51,7 @@ const config: Config = {
                 readingInterval: 1000,
             },
             {
-                type: "gpioBuffer",
+                type: "gpiobuffer",
                 name: "reverseCamera",
                 inputGpio: 20,
                 outputGpio: 27,

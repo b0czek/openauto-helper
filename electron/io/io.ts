@@ -6,8 +6,8 @@ import AdcChannel, { AdcChannelConfig } from "./adcchannel";
 import OnOff, { OnOffConfig } from "./onoff";
 import DS18B20, { DS18B20Config } from "./ds18b20";
 import GPIOBuffer, { GPIOBufferConfig } from "./gpiobuffer";
-import LightSensor, { LightSensorConfig } from "./lightsensor";
-import FileHandler, { FileHandlerConfig } from "./fileHandler";
+import LightSensor, { LightSensorConfig } from "./lightsensor/tsl2561";
+import FileHandler, { FileHandlerConfig } from "./filehandler";
 import DayNight, { DayNightConfig } from "./daynight";
 import ModemSignal, { ModemSignalConfig } from "./modemsignal";
 
@@ -20,14 +20,16 @@ export interface RendererIO {
 export const ComponentTypes = {
     mcp3424: MCP3424,
     onoff: OnOff,
-    adcChannel: AdcChannel,
+    adcchannel: AdcChannel,
     ds18b20: DS18B20,
-    gpioBuffer: GPIOBuffer,
+    gpiobuffer: GPIOBuffer,
     lightsensor: LightSensor,
     filehandler: FileHandler,
     daynight: DayNight,
     modemsignal: ModemSignal,
 };
+
+export type ComponentClasses = "adc";
 
 export type ComponentNames = keyof typeof ComponentTypes;
 export type ComponentsConstructors = typeof ComponentTypes[ComponentNames];
@@ -48,7 +50,6 @@ export type ComponentConfigs =
 export interface IOConfig {
     components: ComponentConfigs[];
 }
-
 export default class IO {
     private ios: RendererIO;
     private components: Components[] = [];
@@ -58,22 +59,22 @@ export default class IO {
             ipcMain,
         };
         for (let component of config.components) {
-            try {
-                if (component.type in Types) {
-                    let IOConstructor = Types[component.type];
-                    // @ts-expect-error
-                    // config parameter in constructor is intersected and
-                    // would require every field of every type of config to be filled
-                    // but they must be complete for a specific type anyway
-                    this.components.push(new IOConstructor(component, this.ios, ...this.appendDependencies(component)));
-                } else {
-                    throw new Error("Invalid component configuration");
-                }
-            } catch (err) {
-                console.error(`${component.name} could not be initialized: ${err.toString()}`);
-            }
+            import(this.buildComponentPath(component))
+                .then((c) => {
+                    let ComponentConstructor = c.default;
+                    this.components.push(
+                        new ComponentConstructor(component, this.ios, ...this.appendDependencies(component))
+                    );
+                })
+                .catch((err) => {
+                    console.error(`${component.name} could not be initialized: ${err.toString()}`);
+                });
         }
     }
+    private buildComponentPath(config: ComponentConfigs): string {
+        return `./${config.class ? `${config.class}/${config.type}` : config.type}`;
+    }
+
     private appendDependencies(component: ComponentConfigs): Components[] {
         if ("auxDependencies" in component && component.auxDependencies) {
             let dependencies = component["auxDependencies"];

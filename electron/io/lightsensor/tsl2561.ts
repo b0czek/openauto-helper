@@ -1,5 +1,5 @@
-import IOComponent, { IOComponentConfig } from "./ioComponent";
-import { RendererIO } from "./io";
+import IOComponent, { AuxIOComponent, IOComponentConfig, Callback, CallbackData } from "../ioComponent";
+import { RendererIO } from "../io";
 import Tsl2561, { Gains, IntegrationTimes } from "ada-tsl2561-ts";
 
 export interface LightSensorConfig extends IOComponentConfig {
@@ -10,16 +10,12 @@ export interface LightSensorConfig extends IOComponentConfig {
     gain?: Gains;
     intergrationTime?: IntegrationTimes;
 }
-type Callback = (err: any, value: number | null) => void;
-interface CallbackData {
-    callback: Callback;
-    type: "any" | "change";
-}
 
-export default class LightSensor extends IOComponent {
+export default class LightSensor extends AuxIOComponent {
     private config: LightSensorConfig;
     private sensor: Tsl2561;
     private interval: NodeJS.Timeout;
+    private callbacks: CallbackData[] = [];
     public value: number | null = null;
 
     constructor(config: LightSensorConfig, ios: RendererIO) {
@@ -36,15 +32,14 @@ export default class LightSensor extends IOComponent {
         });
     }
 
-    private callbacks: CallbackData[] = [];
-    // watch for readings outside change insensitivity
+    public getValue = () => this.value;
+
     public watchForChanges(cb: Callback) {
         this.callbacks.push({
             callback: cb,
             type: "change",
         });
     }
-    // watch for any reading
     public watch(cb: Callback) {
         this.callbacks.push({
             callback: cb,

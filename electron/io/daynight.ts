@@ -1,8 +1,8 @@
 import { Gpio } from "onoff";
 
 import { RendererIO } from "./io";
-import IOComponent, { IOComponentConfig } from "./ioComponent";
-import LightSensor from "./lightsensor";
+import IOComponent, { AuxIOComponent, IOComponentConfig } from "./ioComponent";
+import LightSensor from "./lightsensor/tsl2561";
 
 export interface DayNightConfig extends IOComponentConfig {
     // gpio to be used for interfacing with openauto
@@ -32,7 +32,7 @@ export enum DayNightState {
     Night = "night",
 }
 export default class DayNight extends IOComponent {
-    private lightSensor: LightSensor;
+    private lightSensor: AuxIOComponent;
     private outputGpio: Gpio;
 
     private config: DayNightConfig;
@@ -46,7 +46,7 @@ export default class DayNight extends IOComponent {
 
     public state: DayNightState = DayNightState.Night;
 
-    constructor(config: DayNightConfig, ios: RendererIO, ...aux: LightSensor[]) {
+    constructor(config: DayNightConfig, ios: RendererIO, ...aux: AuxIOComponent[]) {
         super(config, ios);
         this.config = config;
         this.deadZone = config.deadZone * config.threshold;
@@ -57,8 +57,9 @@ export default class DayNight extends IOComponent {
         this.samples = new SensorSamples(this.config.sampleSize);
 
         // initial values
-        if (this.lightSensor.value !== null) {
-            this.samples.push(this.lightSensor.value);
+        let value = this.lightSensor.getValue();
+        if (value !== null) {
+            this.samples.push(value);
             this._calculateNewState();
         }
         // gpio setup

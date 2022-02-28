@@ -1,5 +1,5 @@
 import IO, { RendererIO } from "./io";
-import IOComponent, { IOComponentConfig } from "./ioComponent";
+import IOComponent, { AuxIOComponent, IOComponentConfig } from "./ioComponent";
 import MCP3424, { Channels } from "./adc/mcp3424";
 
 export interface AdcChannelConfig extends IOComponentConfig {
@@ -11,36 +11,38 @@ export interface AdcChannelConfig extends IOComponentConfig {
 }
 
 export default class AdcChannel extends IOComponent {
-    private mcp: MCP3424;
+    private mcp: AuxIOComponent;
     private config: AdcChannelConfig;
 
-    constructor(config: AdcChannelConfig, ios: RendererIO, ...aux: MCP3424[]) {
+    constructor(config: AdcChannelConfig, ios: RendererIO, ...aux: AuxIOComponent[]) {
         super(config, ios);
         this.config = config;
+
         this.mcp = this.getAuxComponent({ type: "mcp3424" }, aux);
-        this.mcp.openChannel(config.adcChannel);
-        this.mcp.watch(config.adcChannel, this._mcpCallback);
+        this.mcp.watch(this._mcpCallback, config.adcChannel);
+
         this.setStateListener(() => {
-            this.sendState(null, this._calculateValue());
+            this.sendState(null, this._getValue());
         });
     }
     public close() {
-        this.mcp.unwatch(this.config.adcChannel, this._mcpCallback);
+        this.mcp.unwatch(this._mcpCallback, this.config.adcChannel);
     }
 
-    private _mcpCallback = (err: any) => {
-        if (err) {
+    private _mcpCallback = (err: any, voltage: number | null) => {
+        if (err || voltage === null) {
             this.sendState(err);
             return;
         }
-        let value = this._calculateValue();
+        let value = this._calculateValue(voltage);
         this.sendState(null, value);
     };
 
-    private _calculateValue(): number {
-        let voltage = this.mcp.getVoltage(this.config.adcChannel)!;
+    private _getValue = () => this._calculateValue(this.mcp.getValue(this.config.adcChannel));
+
+    private _calculateValue(voltage: number | null): number {
         let { maxValue, maxVoltage, minValue, minVoltage } = this.config;
-        if (voltage < minVoltage) {
+        if (voltage === null || voltage < minVoltage) {
             return 0;
         }
         // https://stackoverflow.com/questions/51494376/how-to-transform-one-numerical-scale-into-another

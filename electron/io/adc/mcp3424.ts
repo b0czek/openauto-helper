@@ -1,5 +1,5 @@
 import { RendererIO } from "../io";
-import IOComponent, { IOComponentConfig } from "../ioComponent";
+import IOComponent, { AuxIOComponent, IOComponentConfig, Callback, CallbackData } from "../ioComponent";
 
 import i2c from "i2c-bus";
 
@@ -29,7 +29,6 @@ export type Channels = ZeroToThree;
 export type Gains = ZeroToThree;
 export type Resolutions = ZeroToThree;
 
-export type WatchCallback = (err: any) => void;
 type ReadDataResult = number | null;
 
 export interface MCP3424Config extends IOComponentConfig {
@@ -42,13 +41,12 @@ export interface MCP3424Config extends IOComponentConfig {
 }
 
 interface ChannelData {
-    lastValue: number;
-    callbacks: (WatchCallback | null)[];
-    value: number;
+    callbacks: CallbackData[];
     channel: Channels;
+    rawValue: number | null;
 }
 
-export default class MCP3424 extends IOComponent {
+export default class MCP3424 extends AuxIOComponent {
     private currentChannel: ChannelData;
     private channelsData: (ChannelData | null)[] = new Array(4).fill(null);
 
@@ -66,8 +64,7 @@ export default class MCP3424 extends IOComponent {
     public openChannel(channel: Channels) {
         let newChannel: ChannelData = {
             callbacks: [],
-            lastValue: 0,
-            value: 0,
+            rawValue: 0,
             channel,
         };
         this.channelsData[channel] = newChannel;
@@ -85,36 +82,54 @@ export default class MCP3424 extends IOComponent {
             // which is actually stopped
         }
     }
-    public close() {
-        clearInterval(this._interval);
-        this.bus.closeSync();
+
+    public watch(cb: Callback, channel: Channels) {
+        this._subscribeChannel(cb, channel, "any");
     }
-    public watch(channel: Channels, callback: WatchCallback): void {
-        let chan = this.channelsData[channel];
-        if (chan !== null) {
-            chan.callbacks.push(callback);
-        } else {
-            throw new Error("Cannot watch not opened channel. Try opening it first.");
-        }
+    public watchForChanges(cb: Callback, channel: Channels): void {
+        this._subscribeChannel(cb, channel, "change");
     }
-    public unwatch(channel: Channels, callback: WatchCallback): void {
+
+    public unwatch(cb: Callback, channel: Channels): void {
         let chan = this.channelsData[channel];
-        if (chan !== null && chan.callbacks.length > 0) {
-            this.channelsData[channel]!.callbacks = chan.callbacks.filter((cb) => cb !== callback);
-        } else {
-            throw new Error("Cannot unwatch not opened channel or there are no callbacks for this channel.");
+        if (!chan) return;
+
+        chan.callbacks.filter((data) => data?.callback !== cb);
+
+        if (chan.callbacks.length === 0) {
+            this.closeChannel(channel);
         }
     }
 
-    public getVoltage(channel: Channels): number | null {
-        let mv = this.getMv(channel);
-        if (mv) {
-            return mv * (0.0005 / this._getPga()) * 2.471;
+    private _subscribeChannel(cb: Callback, channel: Channels, type: CallbackData["type"]): void {
+        if (this.channelsData[channel] === null) {
+            this.openChannel(channel);
+        }
+        let chan = this.channelsData[channel];
+        // chan will not actually be null because the channel is opened if it was before
+        chan?.callbacks.push({
+            callback: cb,
+            type: type,
+        });
+    }
+
+    public getValue(channel: Channels): number | null {
+        return this._calculateValue(this.channelsData[channel]?.rawValue ?? null);
+    }
+
+    private _calculateValue(rawValue: number | null): number | null {
+        let mv = this._getMv(rawValue);
+        if (!mv) {
+            return null;
+        }
+        return mv * (0.0005 / this._getPga()) * 2.471;
+    }
+
+    private _getMv(rawValue: number | null): number | null {
+        if (rawValue) {
+            return rawValue / this._getMvDivisor();
         }
         return null;
-    }
-    public getMv(channel: Channels): number | null {
-        return this.channelsData[channel] ? this.channelsData[channel]!.value : null;
     }
 
     private _getMvDivisor(): number {
@@ -159,12 +174,11 @@ export default class MCP3424 extends IOComponent {
 
     private _getOpenedChannels = (): Channels[] => this.channelsData.filter((c) => c !== null).map((c) => c!.channel);
 
-    private _emitDataChange(chan: ChannelData, err: any): void {
-        for (let callback of chan.callbacks) {
-            if (typeof callback === "function") {
-                callback(err);
-            }
-        }
+    private _emitDataChange(chan: ChannelData, err: any, value: number | null): void {
+        chan.rawValue = value; // update last value
+        let val = this._calculateValue(value);
+
+        chan.callbacks.forEach((data) => data.callback(err, val));
     }
     // basically start interval
     // this should be a timeout, so the data would be read before first interval finishing
@@ -176,7 +190,7 @@ export default class MCP3424 extends IOComponent {
             try {
                 newValue = await this._readData(chan.channel);
             } catch (err) {
-                this._emitDataChange(chan, err);
+                this._emitDataChange(chan, err, null);
             }
             // check if value was actually read
             if (newValue === null) {
@@ -184,12 +198,16 @@ export default class MCP3424 extends IOComponent {
             }
 
             if (
-                chan.lastValue + this.config.changeInsensitivity < newValue ||
-                chan.lastValue - this.config.changeInsensitivity > newValue
+                chan.rawValue === null ||
+                chan.rawValue + this.config.changeInsensitivity < newValue ||
+                chan.rawValue - this.config.changeInsensitivity > newValue
             ) {
                 //if value changed
-                chan.lastValue = newValue; // update last value
-                this._emitDataChange(chan, null);
+                this._emitDataChange(chan, null, newValue);
+            } else {
+                let value = this._calculateValue(newValue);
+                // if value did not change "enough", notify only the 'any' listeners
+                chan.callbacks.filter((d) => d.type === "any").forEach((d) => d.callback(null, value));
             }
         }, this.config.readingInterval);
     }
@@ -216,8 +234,6 @@ export default class MCP3424 extends IOComponent {
             let statusByte = br[dataBytes];
 
             if ((statusByte & MCP342X_BUSY) === 0) {
-                // calculate mV present on the adc channel
-                this.currentChannel.value = result / this._getMvDivisor();
                 // get next channel number
                 let nextChannel = this._nextChannel();
                 if (nextChannel === null) {
@@ -239,5 +255,10 @@ export default class MCP3424 extends IOComponent {
                 return resolve(null);
             }
         });
+    }
+
+    public close() {
+        clearInterval(this._interval);
+        this.bus.closeSync();
     }
 }
